@@ -1,0 +1,22 @@
+*{
+    font-family:"Times New Roman",Cambria,Georgia, Times, serif;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+
+}
+body{
+    min-height: 100vh;
+    background-image: linear-gradient(to top, #4f734d,#79ac76, #9cd799);
+}
+form{
+    background: white;
+    width: 350px;
+    height: 350px;
+    padding: 75px 50px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
