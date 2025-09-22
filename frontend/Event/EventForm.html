@@ -4,35 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Form</title>
-  <link rel="stylesheet" href="event.css"> <!-- adjust path if needed -->
+  <link rel="stylesheet" href="event.css">
 </head>
 <body>
   <form id="eventForm" class="event-form">
     <h1>Event Management Form</h1>
 
+    <!-- Event Name -->
     <label for="eventName">Event Name</label>
-    <input type="text" id="eventName" name="eventName" required>
+    <input type="text" id="eventName" name="eventName" maxlength="100" required>
 
+    <!-- Event Description -->
+    <label for="eventDescription">Event Description</label>
+    <textarea id="eventDescription" name="eventDescription" rows="4" required></textarea>
+
+    <!-- Location -->
+    <label for="eventLocation">Location</label>
+    <textarea id="eventLocation" name="eventLocation" rows="3" required></textarea>
+
+    <!-- Required Skills -->
+    <label for="requiredSkills">Required Skills</label>
+    <select id="requiredSkills" name="requiredSkills" multiple required>
+      <option value="communication">Communication</option>
+      <option value="teamwork">Teamwork</option>
+      <option value="leadership">Leadership</option>
+      <option value="technical">Technical</option>
+      <option value="problem-solving">Problem-Solving</option>
+    </select>
+
+    <!-- Urgency -->
+    <label for="urgency">Urgency</label>
+    <select id="urgency" name="urgency" required>
+      <option value="">-- Select Urgency --</option>
+      <option value="low">Low</option>
+      <option value="medium">Medium</option>
+      <option value="high">High</option>
+      <option value="critical">Critical</option>
+    </select>
+
+    <!-- Event Date -->
     <label for="eventDate">Event Date</label>
     <input type="date" id="eventDate" name="eventDate" required>
 
-    <label for="eventTime">Event Time</label>
-    <input type="time" id="eventTime" name="eventTime" required>
-
-    <label for="eventLocation">Location</label>
-    <input type="text" id="eventLocation" name="eventLocation" required>
-
-    <label for="eventType">Type</label>
-    <select id="eventType" name="eventType">
-      <option value="conference">Conference</option>
-      <option value="meeting">Meeting</option>
-      <option value="workshop">Workshop</option>
-      <option value="other">Other</option>
-    </select>
-
-    <label for="eventDescription">Description</label>
-    <textarea id="eventDescription" name="eventDescription" rows="4"></textarea>
-
+    <!-- Submit Button -->
     <button type="submit">Submit Event</button>
   </form>
 </body>
