@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Volunteer Matching Form</title>
+    <link rel="stylesheet" href="../matchform/matchform.css">
+    <script type="text/javascript" src="../matchform/matchform.js" defer></script>
+</head>
+<body>
+
+    <section id="volunteer-matching">
+        <h2>Volunteer Matching Form</h2>
+        <p>A form where administrators can view and match volunteers to events based on their profiles and event requirements.</p>
+
+        <form id="volunteerForm">
+            <!-- Volunteer Name (auto-filled) -->
+            <div class="form-group">
+                <label for="volunteerName">Volunteer Name:</label>
+                <input type="text" id="volunteerName" name="volunteerName" readonly placeholder="Auto-filled from database">
+            </div>
+
+            <!-- Matched Event (auto-filled based on volunteer profile) -->
+            <div class="form-group">
+                <label for="matchedEvent">Matched Event:</label>
+                <input type="text" id="matchedEvent" name="matchedEvent" readonly placeholder="Auto-filled based on volunteer profile">
+            </div>
+
+            <button type="submit">Confirm Match</button>
+        </form>
+    </section>
+
+</body>
+</html>
