@@ -85,3 +85,39 @@ input {
 .btn:hover {
     background: #003580;
 }
+.navigation a{
+    position:relative;
+    font-size: 20px;
+    color: rgb(0, 67, 184);
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+    text-decoration: underline;
+}
+.logo{
+    width: 120px;
+    cursor: pointer;
+}
+header{
+    position:fixed;
+    top:0;
+    left:0;
+    width: 100%;
+    padding:0px 100px;
+    background: white;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99;
+}
+*{
+    font-family:"Times New Roman",Cambria,Georgia, Times, serif;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+.match{
+    margin-top: 150px;
+}
+
