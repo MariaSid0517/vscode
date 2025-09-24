@@ -1,0 +1,48 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f9f9f9;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.notifications-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.notification {
+  background: #fff;
+  border-left: 6px solid #4CAF50;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.notification.warning {
+  border-left-color: #ff9800;
+}
+
+.notification.danger {
+  border-left-color: #f44336;
+}
+
+.notification h3 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.notification p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #888;
+  text-align: right;
+}

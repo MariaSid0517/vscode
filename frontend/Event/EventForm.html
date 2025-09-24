@@ -22,9 +22,9 @@
     <label for="eventLocation">Location</label>
     <textarea id="eventLocation" name="eventLocation" rows="3" required></textarea>
 
-    <!-- Required Skills -->
-    <label for="requiredSkills">Required Skills</label>
-    <select id="requiredSkills" name="requiredSkills" multiple required>
+    <!-- Required Skills (Multi-select) -->
+    <label for="requiredSkills">Required Skills (hold Ctrl or Cmd to select multiple)</label>
+    <select id="requiredSkills" name="requiredSkills[]" multiple size="5" required>
       <option value="communication">Communication</option>
       <option value="teamwork">Teamwork</option>
       <option value="leadership">Leadership</option>
