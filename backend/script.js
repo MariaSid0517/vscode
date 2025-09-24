@@ -32,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("userEmail", email);
       localStorage.setItem("userPassword", password);
 
-      alert("Signup successful! You can now log in.");
-      window.location.href = "../../frontend/login.html"; // redirect to login
+      alert("Registration successful! Redirecting to your profile...");
+      window.location.href = "../../../frontend/User Profile/userprofile.html";
     });
   }
 

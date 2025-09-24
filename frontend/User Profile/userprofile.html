@@ -2,13 +2,212 @@
 <html lang="en">
 <head>
     <title>User Profile Page</title>
-    <link rel = "stylesheet" href="../style.css">
-    <script type="text/javascript" src="../../backend/script.js" defer></script>
+    <link rel = "stylesheet" href="../User Profile/userprofile.css">
+    <script type="text/javascript" src="../User Profile/userprofile.js" defer></script>
 </head>
 <body>
-    <body>
     <header>
         <img src="../logo.png" class="logo">
+        <nav class="navigation">
+            <a href="userprofile.html">Profile</a>
+            <a href="../Event/EventForm.html">Event Management</a>
+            <a href="../matchForm/matchform.html">Volunteer Matching</a>
+            <a href="../Notification/Notification.html">Notifications</a>
+            <a href="../volunteer history/history.html">History</a>
+        </nav>
     </header>
+    <div class="main-panel">
+        <form>
+            <h1>User Profile</h1>
+            <div class="row">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" placeholder="First and Last Name" maxlength="50" required class="textboxuser">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Address 1</label>
+                    <input type="text" id="address1" placeholder="Address 1" maxlength="100" required class="textboxuser">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="city" placeholder="City" maxlength="100" required class="textboxuser">
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <select id="state" required class="textboxuser">
+                        <option value="">Select State</option>
+                        <option value="AL">AL Alabama</option>
+                        <option value="AK">AK Alaska</option>
+                        <option value="AZ">AZ Arizona</option>
+                        <option value="AR">AR Arkansas</option>
+                        <option value="CA">CA California</option>
+                        <option value="CO">CO Colorado</option>
+                        <option value="CT">CT Connecticut</option>
+                        <option value="DE">DE Delaware</option>
+                        <option value="FL">FL Florida</option>
+                        <option value="GA">GA Georgia</option>
+                        <option value="HI">HI Hawaii</option>
+                        <option value="ID">ID Idaho</option>
+                        <option value="IL">IL Illinois</option>
+                        <option value="IN">IN Indiana</option>
+                        <option value="IA">IA Iowa</option>
+                        <option value="KS">KS Kansas</option>
+                        <option value="KY">KY Kentucky</option>
+                        <option value="LA">LA Lousiana</option>
+                        <option value="ME">ME Maine</option>
+                        <option value="MD">MD Maryland</option>
+                        <option value="MA">MA Massachusetts</option>
+                        <option value="MI">MI Michigan</option>
+                        <option value="MN">MN Minnisota</option>
+                        <option value="MS">MS Mississippi</option>
+                        <option value="MO">MO Missouri</option>
+                        <option value="MT">MT Montana</option>
+                        <option value="NE">NE Nebraska</option>
+                        <option value="NV">NV Nevada</option>
+                        <option value="NH">NH New Hampshire</option>
+                        <option value="NJ">NJ New Jersey </option>
+                        <option value="NM">NM New Mexico</option>
+                        <option value="NY">NY New York</option>
+                        <option value="NC">NC North Carolina</option>
+                        <option value="ND">ND North Dakota</option>
+                        <option value="OH">OH Ohio</option>
+                        <option value="OK">OK Oklahoma</option>
+                        <option value="OR">OR Oregon</option>
+                        <option value="PA">PA Pennsylvania</option>
+                        <option value="RI">RI Rhode Island</option>
+                        <option value="SC">SC South Carolina</option>
+                        <option value="SD">SD South Dakota</option>
+                        <option value="TN">TN Tennessee</option>
+                        <option value="TX">TX Texas</option>
+                        <option value="UT">UT Utah</option>
+                        <option value="VT">VT Vermont</option>
+                        <option value="VA">VA Virginia</option>
+                        <option value="WA">WA Washington</option>
+                        <option value="WV">WV West Virginia</option>
+                        <option value="WI">WI Wisconsin</option>
+                        <option value="WY">WY Wyoming</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Zip Code</label>
+                    <input type="text" id="zip" placeholder="Zip Code" pattern="\d{5,9}" required class="textboxuser">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Address 2</label>
+                    <input type="text" id="address2" placeholder="Address 2" maxlength="100" class="textboxuser">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="city" placeholder="City" maxlength="100" class="textboxuser">
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <select id="state" class="textboxuser">
+                        <option value="">Select State</option>
+                        <option value="AL">AL Alabama</option>
+                        <option value="AK">AK Alaska</option>
+                        <option value="AZ">AZ Arizona</option>
+                        <option value="AR">AR Arkansas</option>
+                        <option value="CA">CA California</option>
+                        <option value="CO">CO Colorado</option>
+                        <option value="CT">CT Connecticut</option>
+                        <option value="DE">DE Delaware</option>
+                        <option value="FL">FL Florida</option>
+                        <option value="GA">GA Georgia</option>
+                        <option value="HI">HI Hawaii</option>
+                        <option value="ID">ID Idaho</option>
+                        <option value="IL">IL Illinois</option>
+                        <option value="IN">IN Indiana</option>
+                        <option value="IA">IA Iowa</option>
+                        <option value="KS">KS Kansas</option>
+                        <option value="KY">KY Kentucky</option>
+                        <option value="LA">LA Lousiana</option>
+                        <option value="ME">ME Maine</option>
+                        <option value="MD">MD Maryland</option>
+                        <option value="MA">MA Massachusetts</option>
+                        <option value="MI">MI Michigan</option>
+                        <option value="MN">MN Minnisota</option>
+                        <option value="MS">MS Mississippi</option>
+                        <option value="MO">MO Missouri</option>
+                        <option value="MT">MT Montana</option>
+                        <option value="NE">NE Nebraska</option>
+                        <option value="NV">NV Nevada</option>
+                        <option value="NH">NH New Hampshire</option>
+                        <option value="NJ">NJ New Jersey </option>
+                        <option value="NM">NM New Mexico</option>
+                        <option value="NY">NY New York</option>
+                        <option value="NC">NC North Carolina</option>
+                        <option value="ND">ND North Dakota</option>
+                        <option value="OH">OH Ohio</option>
+                        <option value="OK">OK Oklahoma</option>
+                        <option value="OR">OR Oregon</option>
+                        <option value="PA">PA Pennsylvania</option>
+                        <option value="RI">RI Rhode Island</option>
+                        <option value="SC">SC South Carolina</option>
+                        <option value="SD">SD South Dakota</option>
+                        <option value="TN">TN Tennessee</option>
+                        <option value="TX">TX Texas</option>
+                        <option value="UT">UT Utah</option>
+                        <option value="VT">VT Vermont</option>
+                        <option value="VA">VA Virginia</option>
+                        <option value="WA">WA Washington</option>
+                        <option value="WV">WV West Virginia</option>
+                        <option value="WI">WI Wisconsin</option>
+                        <option value="WY">WY Wyoming</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Zip Code</label>
+                    <input type="text" id="zip" placeholder="Zip Code" pattern="\d{5,9}" class="textboxuser">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label>Skills</label>
+                    <div>
+                        <select id="skills" name="skills" multiple required size="5" class="skills">
+                            <option value="teaching">Teaching</option>
+                            <option value="cooking">Cooking</option>
+                            <option value="first-aid">First Aid</option>
+                            <option value="event-planning">Event Planning</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="fundraising">Fundraising</option>
+                            <option value="graphic-design">Graphic Design</option>
+                            <option value="multilingual">Multilingual</option>
+                            <option value="CPR-certified">CPR Certified</option>
+                            <option value="hospital-care">Hospital/Patient Care</option>
+                            <option value="public-speaking">Public Speaking</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Preferences</label>
+                    <textarea id="preferences" placeholder="Preferences" class="textboxuser"></textarea>
+                </div>
+            </div>
+            <div class="daterow">
+                <div class="form-group">
+                    <label for="availability">Availability (multiple dates required):</label><br>
+                    <div id="availability-container">
+                        <input type="date" name="availability[]" required>
+                    </div>
+                    <button type="button" onclick="addDate()">Add Another Date</button>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="loginbtn">Save Profile</button>
+            </div>
+        </form>
+    </div>
+    
+ 
 </body>
 </html>
