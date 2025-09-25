@@ -34,6 +34,8 @@
           <th>Date</th>
           <th>Location</th>
           <th>Description</th>
+          <th>Required Skills</th>
+          <th>Urgency</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -45,6 +47,8 @@
           <td>2025-09-10</td>
           <td>Downtown Shelter</td>
           <td>Provided basic health screenings</td>
+          <td>Leadership and Problem-solving</td>
+          <td>Medium</td>
           <td>Attended</td>
         </tr>
         <tr>
@@ -53,6 +57,8 @@
           <td>2025-09-15</td>
           <td>City Park</td>
           <td>Distributed meals and hygiene kits</td>
+          <td>Teamwork and Communication</td>
+          <td>Low</td>
           <td>Missed</td>
         </tr>
       </tbody>
@@ -88,6 +94,28 @@
       </div>
 
       <div class="form-group">
+      <label for="requiredSkills">Required Skills (hold Ctrl or Cmd to select multiple)</label>
+    <select id="requiredSkills" name="requiredSkills[]" multiple size="5" required>
+      <option value="communication">Communication</option>
+      <option value="teamwork">Teamwork</option>
+      <option value="leadership">Leadership</option>
+      <option value="technical">Technical</option>
+      <option value="problem-solving">Problem-Solving</option>
+    </select>
+    </div>
+
+      <div class="form-group">
+        <label for="urgency">Urgency *</label>
+        <select id="urgency" name="urgency" required>
+            <option value="">-- Select Urgency --</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Critical">Critical</option>
+        </select>
+      </div>
+
+      <div class="form-group">
         <label for="status">Status *</label>
         <select id="status" name="status" required>
           <option value="">-- Select Status --</option>
@@ -97,7 +125,7 @@
         </select>
       </div>
 
-      <button type="submit" class="btn-confirm">Add Record</button>
+      <button type="submit" class="btn2">Add Record</button>
     </form>
   </div>
 </section>

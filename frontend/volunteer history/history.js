@@ -6,10 +6,12 @@ document.getElementById("historyForm").addEventListener("submit", function(e) {
     const date = document.getElementById("date").value;
     const location = document.getElementById("location").value.trim();
     const description = document.getElementById("description").value.trim();
+    const requiredSkills = document.getElementById("requiredSkills").value;
+    const urgency = document.getElementById("urgency").value;
     const status = document.getElementById("status").value;
 
 
-    if (!volunteer || !event || !date || !location || !description || !status) {
+    if (!volunteer || !event || !date || !location || !description || !requiredSkills || !urgency || !status) {
         alert("All fields are required.");
         return;
     }
@@ -27,6 +29,8 @@ document.getElementById("historyForm").addEventListener("submit", function(e) {
       <td>${date}</td>
       <td>${location}</td>
       <td>${description}</td>
+      <td>${requiredSkills}</td>
+      <td>${urgency}</td>
       <td>${status}</td>
     `;
 

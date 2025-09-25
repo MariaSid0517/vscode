@@ -83,3 +83,23 @@ header{
     text-align: center;
 }
 
+.btn2{
+    display: block;
+    width: 10%;
+    margin: 30px left;
+    padding: 12px;
+    background-color: #90c9eb; 
+    color: black;   
+    font-weight: bold;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px; 
+    cursor: pointer;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn2:hover {
+    background-color: #35749e
+}
+
