@@ -71,19 +71,22 @@ input {
 
 /* Button */
 .btn {
-    display: block;
+display: block;
     width: 100%;
     padding: 12px;
-    background: #004aad;
-    color: white;
-    border: none;
-    border-radius: 8px;
+    background-color: #90c9eb; 
+    color: black;   
+    font-weight: bold;
     font-size: 1rem;
+    border: none;
+    border-radius: 8px; 
     cursor: pointer;
+    margin-top: 20px;
+    text-align: center;
 }
 
 .btn:hover {
-    background: #003580;
+    background-color: #35749e
 }
 .navigation a{
     position:relative;
