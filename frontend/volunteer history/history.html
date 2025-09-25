@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Volunteer Matching Form</title>
+    <link rel="stylesheet" href="../volunteer history/history.css">
+    <script type="text/javascript" src="../volunteer history/history.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <img src="../logo.png" class="logo">
+        <nav class="navigation">
+            <a href="../User Profile/userprofile.html">Profile</a>
+            <a href="../Event/EventForm.html">Event Management</a>
+            <a href="../matchForm/matchform.html">Volunteer Matching</a>
+            <a href="../Notification/Notification.html">Notifications</a>
+            <a href="../volunteer history/history.html">History</a>
+        </nav>
+    </header>
+
+<section id="volunteer-history">
+  <div class="form-card">
+    <h2 class="paget">Volunteer History</h2>
+    <p class="description">
+      Tabular display of all volunteer participation history.
+    </p>
+
+
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Volunteer Name</th>
+          <th>Event Name</th>
+          <th>Date</th>
+          <th>Location</th>
+          <th>Description</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>Maria Siddeeque</td>
+          <td>Mobile Health Clinic</td>
+          <td>2025-09-10</td>
+          <td>Downtown Shelter</td>
+          <td>Provided basic health screenings</td>
+          <td>Attended</td>
+        </tr>
+        <tr>
+          <td>Matthew Reyna</td>
+          <td>Community Food Drive</td>
+          <td>2025-09-15</td>
+          <td>City Park</td>
+          <td>Distributed meals and hygiene kits</td>
+          <td>Missed</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <form id="historyForm">
+      <h3>Add Participation Record</h3>
+
+      <div class="form-group">
+        <label for="volunteerName">Volunteer Name *</label>
+        <input type="text" id="volunteerName" name="volunteerName" required maxlength="50">
+      </div>
+
+      <div class="form-group">
+        <label for="eventName">Event Name *</label>
+        <input type="text" id="eventName" name="eventName" required maxlength="100">
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date *</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location *</label>
+        <input type="text" id="location" name="location" required maxlength="100">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description *</label>
+        <textarea id="description" name="description" required maxlength="200"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="status">Status *</label>
+        <select id="status" name="status" required>
+          <option value="">-- Select Status --</option>
+          <option value="Attended">Attended</option>
+          <option value="Missed">Missed</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-confirm">Add Record</button>
+    </form>
+  </div>
+</section>
+
+</body>
+</html>

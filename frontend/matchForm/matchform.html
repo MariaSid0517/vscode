@@ -16,6 +16,7 @@
             <a href="../volunteer history/history.html">History</a>
         </nav>
     </header>
+
     <section id="volunteer-matching">
         <h2 class="match"> Volunteer Matching Form</h2>
         <p class = "pmatch">A form where administrators can view and match volunteers to events based on their profiles and event requirements.</p>
@@ -23,15 +24,25 @@
         <form id="volunteerForm">
             <!-- Volunteer Name (auto-filled) -->
             <div class="form-group">
-                <label for="volunteerName">Volunteer Name:</label>
-                <input type="text" id="volunteerName" name="volunteerName" readonly placeholder="Auto-filled from database">
-            </div>
+  <label for="volunteerName">Volunteer Name:</label>
+  <select id="volunteerName" name="volunteerName">
+    <option value="">-- Select Volunteer --</option>
+    <option value="Maria">Maria Siddeeque</option>
+    <option value="Matthew">Matthew Reyna</option>
+    <option value="Madeeha">Madeeha Siddeeque</option>
+  </select>
+</div>
 
             <!-- Matched Event (auto-filled based on volunteer profile) -->
             <div class="form-group">
-                <label for="matchedEvent">Matched Event:</label>
-                <input type="text" id="matchedEvent" name="matchedEvent" readonly placeholder="Auto-filled from database based on volunteer's profile">
-            </div>
+  <label for="matchedEvent">Matched Event:</label>
+  <select id="matchedEvent" name="matchedEvent">
+    <option value="">-- Select Event --</option>
+    <option value="Mental Health Outreach">Mental Health Outreach</option>
+    <option value="Health Clinic">Health Clinic</option>
+    <option value="Fundraiser Gala">Fundraiser Gala</option>
+  </select>
+</div>
 
             <button type="submit" class="btn">Confirm Match</button>
         </form>
