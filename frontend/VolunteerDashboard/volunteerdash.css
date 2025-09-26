@@ -7,7 +7,7 @@
 }
 body {
   font-family: Arial, sans-serif;
-  background: #aa7979;
+  background: linear-gradient(to top, #6ed8ff,#9fe5f9, #c1e7f7);
   margin: 0;
   padding: 0;
 }
@@ -23,6 +23,8 @@ body {
 
 h1, h2, h3 {
   color: #333;
+  text-align: center;
+  padding:10px 10px;
 }
 
 label {
@@ -61,14 +63,14 @@ nav.tab-nav button, nav.tab-nav .logout {
   padding: 8px 12px;
   border: none;
   border-radius: 5px;
-  background: #333;
+  background: #8f0a0a;
   color: white;
   cursor: pointer;
   text-decoration: none;
 }
 
 nav.tab-nav button:hover, nav.tab-nav .logout:hover {
-  background: #555;
+  background: #7b0f0f;
 }
 
 table {
@@ -81,7 +83,17 @@ th, td {
   border: 1px solid #ddd;
   padding: 8px;
 }
-
 th {
   background: #f4f4f4;
+}
+li{
+  margin-right: 10px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: #ffffff;
+  color: black;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
 }
