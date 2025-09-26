@@ -6,17 +6,18 @@ document.addEventListener("DOMContentLoaded", () => {
   if (regForm) {
     regForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const name = document.getElementById("email-input").value;
-      const email = document.getElementById("password-input").value;
-      const password = document.getElementById("repeat-password-input").value;
+
+      const email = document.getElementById("email-input").value;
+      const password = document.getElementById("password-input").value;
+      const repeatpassword = document.getElementById("repeat-password-input").value;
       const role = document.getElementById("regRole").value;
 
-      if (!email || !password || !repeatPassword) {
+      if (!email || !password || !repeatpassword) {
         alert("Please fill in all fields.");
         return;
       }
 
-      if (password !== repeatPassword) {
+      if (password !== repeatpassword) {
         alert("Passwords do not match.");
         return;
       }
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Save to localStorage (simulate DB)
-      localStorage.setItem("user", JSON.stringify({ name, email, password, role }));
+      localStorage.setItem("user", JSON.stringify({ email, password, repeatpassword, role }));
 
     });
   }
@@ -47,9 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Login successful!");
 
         if (role === "admin") {
-          window.location.href = "admin_dashboard.html";
+          window.location.href = "../AdminDashboard/Admindash.html";
         } else {
-          window.location.href = "profile.html";
+          window.location.href = "../VolunteerDashboard/Volunteerdashboard.html";
         }
       } else {
         alert("Invalid credentials or role!");
@@ -87,3 +88,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function addDate() {
+  const container = document.getElementById("availability-container");
+  const input = document.createElement("input");
+  input.type = "date";
+  input.name = "availability[]";
+  container.appendChild(document.createElement("br"));
+  container.appendChild(input);
+}
