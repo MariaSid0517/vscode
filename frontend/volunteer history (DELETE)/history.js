@@ -38,3 +38,27 @@ document.getElementById("historyForm").addEventListener("submit", function(e) {
     this.reset();
     alert("Record added successfully!");
 });
+
+
+async function loadHistory(volunteerId) {
+  const response = await fetch(`/api/volunteer-history/${volunteerId}`);
+  const history = await response.json();
+  
+  const tbody = document.querySelector("#historyTable tbody");
+  tbody.innerHTML = ""; // Clear table first
+
+  history.forEach(event => {
+    const row = `
+      <tr>
+        <td>${event.event_name}</td>
+        <td>${event.event_description}</td>
+        <td>${event.location}</td>
+        <td>${event.required_skills}</td>
+        <td>${event.urgency}</td>
+        <td>${new Date(event.event_date).toLocaleDateString()}</td>
+        <td>${event.participation_status}</td>
+      </tr>
+    `;
+    tbody.innerHTML += row;
+  });
+}

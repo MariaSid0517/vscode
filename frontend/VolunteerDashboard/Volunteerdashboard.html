@@ -1,0 +1,50 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Dashboard</title>
+  <link rel="stylesheet" href="volunteerdash.css">
+  <script src="volunteerdash.js" defer></script>
+</head>
+<body>
+  <nav>
+    <h2>Volunteer Dashboard</h2>
+    <ul>
+      <li><a href="#events">Available Events</a></li>
+      <li><a href="#my-history">My History</a></li>
+      <li><a href="../Notification/Notification.html">Notification Center</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Available Events -->
+    <section id="events">
+      <h3>Available Events</h3>
+      <div id="eventListVolunteer"></div>
+    </section>
+
+    <!-- Volunteer History -->
+    <section id="my-history">
+      <h3>My Volunteer History</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Event</th>
+            <th>Description</th>
+            <th>Location</th>
+            <th>Skills</th>
+            <th>Urgency</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="myHistoryTable">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

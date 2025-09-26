@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <title>Signup Page</title>
-    <link rel = "stylesheet" href="../style.css">
-    <script type="text/javascript" src="../../backend/script.js" defer></script>
+    <link rel = "stylesheet" href="../login and registration/style.css">
+    <script type="text/javascript" src="../login and registration/script.js" defer></script>
 
 </head>
 <body>
@@ -11,7 +11,7 @@
         <img src="../logo.png" class="logo">
     </header>
     <div class="wrap">
-        <form id="form">
+        <form id="registerform">
             <h1>Signup</h1>
             <div class="textBoxdiv">
                 <input type="email" name="email" id="email-input" placeholder="Email">
@@ -21,6 +21,13 @@
             </div>
             <div class="textBoxdiv">
                 <input type="password" name="repeat-password" id="repeat-password-input" placeholder="Repeat Password">
+            </div>
+            <div class="selectbox">
+                <label for="role">Login as:</label>
+                <select id="role" required id="regRole">
+                    <option value="volunteer">Volunteer</option>
+                    <option value="admin">Admin</option>
+                </select>
             </div>
             <button type="submit" class="loginbtn">Signup</button>
             <div class="signup">
