@@ -1,29 +1,22 @@
-function showTab(tabId) {
+// backend/Admin/admin.js
+import API from '../app.js';
+
+window.showTab = function(tabId) {
   document.querySelectorAll(".tab-content").forEach(tab => tab.style.display = "none");
   document.getElementById(tabId).style.display = "block";
-}
+};
 
-// Load stored data
-let events = JSON.parse(localStorage.getItem("events")) || [];
-let matches = JSON.parse(localStorage.getItem("matches")) || [];
-let volunteers = JSON.parse(localStorage.getItem("volunteers")) || []; // pretend this comes from DB
+let events = API.getEvents();
+let matches = API.getMatches();
+let volunteers = API.getVolunteers();
 
-// Dummy volunteers if none exist
-if (volunteers.length === 0) {
-  volunteers = [
-    { name: "Maria Siddeeque", skills: ["teaching"], id: 1 },
-    { name: "Madeeha Siddeeque", skills: ["coding", "logistics"], id: 2 }
-  ];
-  localStorage.setItem("volunteers", JSON.stringify(volunteers));
-}
-
-// Event creation
+// EVENT CREATION
 const eventForm = document.getElementById("eventForm");
 if (eventForm) {
   eventForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const event = {
+    const newEvent = {
       id: Date.now(),
       name: document.getElementById("eventName").value,
       description: document.getElementById("eventDescription").value,
@@ -33,8 +26,8 @@ if (eventForm) {
       date: document.getElementById("eventDate").value
     };
 
-    events.push(event);
-    localStorage.setItem("events", JSON.stringify(events));
+    events.push(newEvent);
+    API.saveEvents(events);
 
     alert("Event created!");
     renderEvents();
@@ -43,7 +36,7 @@ if (eventForm) {
   });
 }
 
-// Render events list
+// RENDER EVENTS
 function renderEvents() {
   const eventList = document.getElementById("eventList");
   if (!eventList) return;
@@ -56,7 +49,7 @@ function renderEvents() {
 }
 renderEvents();
 
-// Populate event options in matching form
+// EVENT OPTIONS
 function renderEventOptions() {
   const eventSelect = document.getElementById("matchedEvent");
   if (!eventSelect) return;
@@ -70,7 +63,7 @@ function renderEventOptions() {
 }
 renderEventOptions();
 
-// Populate volunteer options
+// VOLUNTEER OPTIONS
 function renderVolunteerOptions() {
   const volSelect = document.getElementById("volunteerName");
   if (!volSelect) return;
@@ -84,7 +77,7 @@ function renderVolunteerOptions() {
 }
 renderVolunteerOptions();
 
-// Handle volunteer matching
+// MATCHING
 const matchingForm = document.getElementById("matchingForm");
 if (matchingForm) {
   matchingForm.addEventListener("submit", (e) => {
@@ -107,7 +100,7 @@ if (matchingForm) {
     };
 
     matches.push(match);
-    localStorage.setItem("matches", JSON.stringify(matches));
+    API.saveMatches(matches);
 
     alert(`Matched ${vol.name} to ${ev.name}!`);
     renderMatches();
@@ -115,7 +108,7 @@ if (matchingForm) {
   });
 }
 
-// Render matches list
+// MATCH LIST
 function renderMatches() {
   const matchList = document.getElementById("matchList");
   if (!matchList) return;
@@ -128,7 +121,7 @@ function renderMatches() {
 }
 renderMatches();
 
-// Render volunteer history table
+// HISTORY TABLE
 function renderHistory() {
   const table = document.getElementById("historyTable");
   if (!table) return;

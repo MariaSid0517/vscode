@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard Nav</title>
+  <title>Admin Navbar</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
     }
 
-    /* Navbar container */
     .navbar {
       display: flex;
       justify-content: center;
@@ -23,39 +22,43 @@
       z-index: 1000;
     }
 
-    /* Navbar links */
     .navbar a {
       text-decoration: none;
       color: #3E2723;
       margin: 0 15px;
       font-size: 16px;
       font-weight: 500;
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, border-bottom 0.3s ease;
+      cursor: pointer;
+      padding-bottom: 4px;
     }
 
     .navbar a:hover {
       color: #6d4c41;
     }
 
-    /* Divider */
+    .navbar a.active {
+      color: #6d4c41;
+      font-weight: bold;
+      border-bottom: 2px solid #6d4c41;
+    }
+
     .divider {
       color: #888;
     }
   </style>
 </head>
 <body>
-
   <div class="navbar">
-    <a href="admin_dashboard.html">Dashboard</a>
+    <a id="nav-home" class="active">Home</a>
     <span class="divider">|</span>
-    <a href="events.html">Events</a>
+    <a id="nav-events">Events</a>
     <span class="divider">|</span>
-    <a href="notifications.html">Notifications</a>
+    <a id="nav-notifications">Notifications</a>
     <span class="divider">|</span>
-    <a href="volunteer_matching.html">Volunteer Matching</a>
+    <a id="nav-matching">Volunteer Matching</a>
     <span class="divider">|</span>
-    <a href="volunteer_history.html">Volunteer History</a>
+    <a id="nav-history">Volunteer History</a>
   </div>
-
 </body>
 </html>

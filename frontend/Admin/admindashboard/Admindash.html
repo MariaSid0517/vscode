@@ -1,10 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="admindash.css">
-  <script src="admin.js" defer></script>
-  <script src="../Navbar/loadNavbar.js" defer></script>
+  <script type="module" src="../../../backend/Admin/admin.js" defer></script>
 </head>
 <body>
   <!-- Navbar placeholder -->
@@ -12,15 +12,19 @@
 
   <div class="container">
     <h1>Administrator Dashboard</h1>
+
     <nav class="tab-nav">
-      <button onclick="showTab('events')">Event Management</button>
-      <button onclick="showTab('matching')">Volunteer Matching</button>
-      <button onclick="showTab('history')">Volunteer History</button>
-      <a href="../login and registration/login.html" class="logout">Logout</a>
+      <a href="../../login and registration/login.html" class="logout">Logout</a>
     </nav>
 
+    <!-- ✅ Home Tab -->
+    <div id="home" class="tab-content">
+      <h2>Home</h2>
+      <p>This is the home page.</p>
+    </div>
+
     <!-- Event Management -->
-    <div id="events" class="tab-content">
+    <div id="events" class="tab-content" style="display:none;">
       <h2>Create Event</h2>
       <form id="eventForm">
         <label>Event Name</label>
@@ -34,11 +38,11 @@
 
         <label>Required Skills</label>
         <select id="eventSkills" multiple required>
-            <option value="communication">Communication</option>
-            <option value="teamwork">Teamwork</option>
-            <option value="leadership">Leadership</option>
-            <option value="technical">Technical</option>
-            <option value="problem-solving">Problem-Solving</option>
+          <option value="communication">Communication</option>
+          <option value="teamwork">Teamwork</option>
+          <option value="leadership">Leadership</option>
+          <option value="technical">Technical</option>
+          <option value="problem-solving">Problem-Solving</option>
         </select>
 
         <label>Urgency</label>
@@ -68,11 +72,7 @@
         <select id="volunteerName"></select>
 
         <label>Matched Event</label>
-        <select id="matchedEvent">
-            <option value="Mental Health Outreach">Mental Health Outreach</option>
-            <option value="Health Clinic">Health Clinic</option>
-            <option value="Fundraiser Gala">Fundraiser Gala</option>
-        </select>
+        <select id="matchedEvent"></select>
 
         <button type="submit">Match Volunteer</button>
       </form>
