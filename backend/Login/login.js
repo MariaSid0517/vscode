@@ -1,99 +1,102 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const regForm = document.getElementById("registerform");
-  const loginForm = document.getElementById("loginform");
-  const profileForm = document.getElementById("profileForm");
 
-  if (regForm) {
-    regForm.addEventListener("submit", (e) => {
+  // Simple hash function for password simulation (for demo only)
+  function hashPassword(pw) {
+    return btoa(pw); // base64 encode as simple hash
+  }
+
+  // Initialize first admin if not exists
+  if (!localStorage.getItem("users")) {
+    const firstAdmin = [{
+      email: "admin@domain.com",
+      password: hashPassword("admin123"),
+      role: "admin",
+      profileCompleted: true
+    }];
+    localStorage.setItem("users", JSON.stringify(firstAdmin));
+  }
+
+  // ---- Registration ----
+  const registerForm = document.getElementById("registerform");
+  if (registerForm) {
+    registerForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("email-input").value;
+      const email = document.getElementById("email-input").value.trim();
       const password = document.getElementById("password-input").value;
-      const repeatpassword = document.getElementById("repeat-password-input").value;
-      const role = document.getElementById("regRole").value;
+      const repeatPassword = document.getElementById("repeat-password-input").value;
+      const role = document.getElementById("role").value;
 
-      if (!email || !password || !repeatpassword) {
-        alert("Please fill in all fields.");
+      if (!email || !password || !repeatPassword) {
+        alert("Please fill all fields.");
         return;
       }
 
-      if (password !== repeatpassword) {
-        alert("Passwords do not match.");
+      if (password !== repeatPassword) {
+        alert("Passwords do not match!");
         return;
       }
 
-      if (password.length < 6) {
-        alert("Password must be at least 6 characters.");
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+
+      if (users.find(u => u.email === email)) {
+        alert("Email already exists!");
         return;
       }
 
-      // Save to localStorage (simulate DB)
-      localStorage.setItem("user", JSON.stringify({ email, password, repeatpassword, role }));
+      const newUser = {
+        email: email,
+        password: hashPassword(password),
+        role: role,
+        profileCompleted: role === "admin" ? true : false // volunteers need profile
+      };
 
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
+
+      if (role === "volunteer") {
+        localStorage.setItem("currentUser", email);
+        window.location.href = "../UserProfile/userprofile.html"; // redirect to profile page
+      } else {
+        window.location.href = "../Admin/admindashboard/Admindash.html"; // admin dashboard
+      }
     });
   }
 
-  // Handle login
+  // ---- Login ----
+  const loginForm = document.getElementById("loginform");
   if (loginForm) {
     loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("loginemail").value;
+      const email = document.getElementById("loginemail").value.trim();
       const password = document.getElementById("loginpassword").value;
       const role = document.getElementById("loginrole").value;
 
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const user = users.find(u => u.email === email && u.role === role);
 
-      if (storedUser && storedUser.email === email && storedUser.password === password && storedUser.role === role) {
-        alert("Login successful!");
-
-        if (role === "admin") {
-          window.location.href = "../AdminDashboard/Admindash.html";
-        } else {
-          window.location.href = "../VolunteerDashboard/Volunteerdashboard.html";
-        }
-      } else {
+      if (!user) {
         alert("Invalid credentials or role!");
+        return;
       }
-    });
-  }
 
-   if (profileForm) {
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (user.password !== hashPassword(password)) {
+        alert("Incorrect password!");
+        return;
+      }
 
-      const profileData = {
-        fullName: document.getElementById("fullName").value,
-        address1: document.getElementById("address1").value,
-        address2: document.getElementById("address2").value,
-        city: document.getElementById("city").value,
-        state: document.getElementById("state").value,
-        zip: document.getElementById("zip").value,
-        skills: Array.from(document.getElementById("skills").selectedOptions).map(opt => opt.value),
-        preferences: document.getElementById("preferences").value,
-        availability: document.getElementById("availability").value,
-      };
+      localStorage.setItem("currentUser", email);
 
-      const updatedUser = { ...storedUser, ...profileData, profileComplete: true };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-
-      alert("Profile saved!");
-
-      if (storedUser.role === "admin") {
-        window.location.href = "../AdminDashboard/Admindashboard.html";
-      } else {
-        window.location.href = "../VolunteerDashboard/Volunteerdashboard.html";
+      if (role === "volunteer") {
+        if (!user.profileCompleted) {
+          window.location.href = "../UserProfile/userprofile.html"; // complete profile
+        } else {
+          window.location.href = "../VolunteerDashboard/volunteerdashboard.html"; // dashboard
+        }
+      } else if (role === "admin") {
+        window.location.href = "../Admin/admindashboard/Admindash.html";
       }
     });
   }
 });
-
-function addDate() {
-  const container = document.getElementById("availability-container");
-  const input = document.createElement("input");
-  input.type = "date";
-  input.name = "availability[]";
-  container.appendChild(document.createElement("br"));
-  container.appendChild(input);
-}

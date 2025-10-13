@@ -3,62 +3,70 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Form</title>
-  <link rel="stylesheet" href="event.css">
+  <title>Event Form | Admin</title>
+  <link rel="stylesheet" href="../Event/event.css">
 </head>
 <body>
-  <header>
-        <img src="../logo.png" class="logo">
-        <nav class="navigation">
-            <a href="../User Profile/userprofile.html">Profile</a>
-            <a href="../Event/EventForm.html">Event Management</a>
-            <a href="../matchForm/matchform.html">Volunteer Matching</a>
-            <a href="../Notification/Notification.html">Notifications</a>
-            <a href="../volunteer history/history.html">History</a>
-        </nav>
-    </header>
+  <!-- Navbar placeholder -->
+  <div id="navbar-placeholder"></div>
 
-  <form id="eventForm" class="event-form">
-    <h1>Event Management Form</h1>
+  <div class="container">
+    <form id="eventForm" class="event-form">
+      <h1>Event Management Form</h1>
 
-    <!-- Event Name -->
-    <label for="eventName">Event Name</label>
-    <input type="text" id="eventName" name="eventName" maxlength="100" required>
+      <!-- Event Name -->
+      <label for="eventName">Event Name</label>
+      <input type="text" id="eventName" name="eventName" maxlength="100" required>
 
-    <!-- Event Description -->
-    <label for="eventDescription">Event Description</label>
-    <textarea id="eventDescription" name="eventDescription" rows="4" required></textarea>
+      <!-- Event Description -->
+      <label for="eventDescription">Event Description</label>
+      <textarea id="eventDescription" name="eventDescription" rows="4" required></textarea>
 
-    <!-- Location -->
-    <label for="eventLocation">Location</label>
-    <textarea id="eventLocation" name="eventLocation" rows="3" required></textarea>
+      <!-- Location -->
+      <label for="eventLocation">Location</label>
+      <textarea id="eventLocation" name="eventLocation" rows="3" required></textarea>
 
-    <!-- Required Skills (Multi-select) -->
-    <label for="requiredSkills">Required Skills (hold Ctrl or Cmd to select multiple)</label>
-    <select id="requiredSkills" name="requiredSkills[]" multiple size="5" required>
-      <option value="communication">Communication</option>
-      <option value="teamwork">Teamwork</option>
-      <option value="leadership">Leadership</option>
-      <option value="technical">Technical</option>
-      <option value="problem-solving">Problem-Solving</option>
-    </select>
+      <!-- Required Skills -->
+      <label for="requiredSkills">Required Skills (Ctrl/Cmd to select multiple)</label>
+      <select id="requiredSkills" name="requiredSkills[]" multiple size="5" required>
+        <option value="Communication">Communication</option>
+        <option value="Teamwork">Teamwork</option>
+        <option value="Leadership">Leadership</option>
+        <option value="Technical">Technical</option>
+        <option value="Problem-Solving">Problem-Solving</option>
+        <option value="Medical Support">Medical Support</option>
+        <option value="Fundraising">Fundraising</option>
+      </select>
 
-    <!-- Urgency -->
-    <label for="urgency">Urgency</label>
-    <select id="urgency" name="urgency" required>
-      <option value="">-- Select Urgency --</option>
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
-      <option value="critical">Critical</option>
-    </select>
+      <!-- Urgency -->
+      <label for="urgency">Urgency</label>
+      <select id="urgency" name="urgency" required>
+        <option value="">-- Select Urgency --</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+        <option value="Critical">Critical</option>
+      </select>
 
-    <!-- Event Date -->
-    <label for="eventDate">Event Date</label>
-    <input type="date" id="eventDate" name="eventDate" required>
+      <!-- Event Date -->
+      <label for="eventDate">Event Date</label>
+      <input type="date" id="eventDate" name="eventDate" required>
 
-    <!-- Submit Button -->
-    <button type="submit">Submit Event</button>
-  </form>
+      <!-- Submit Button -->
+      <button type="submit">Submit Event</button>
+    </form>
+
+    <div class="event-list">
+      <h3>Existing Events</h3>
+      <ul id="eventList"></ul>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
+    loadNavbar();
+  </script>
+  
+  <script src="../../../backend/Admin/event.js" defer></script>
 </body>
 </html>

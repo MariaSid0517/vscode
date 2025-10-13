@@ -5,100 +5,72 @@
     text-decoration: none;
     box-sizing: border-box;
 }
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to top, #6ed8ff,#9fe5f9, #c1e7f7);
+/* Reset default margins and paddings */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-.container {
-  width: 80%;
-  margin: 20px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-h1, h2, h3 {
+/* Body styling */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7fa;
   color: #333;
+}
+
+/* Container for the dashboard content */
+.container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+/* Main heading */
+.container h1 {
+  font-size: 2rem;
+  color: #004a99;
+  margin-bottom: 1rem;
   text-align: center;
-  padding: 10px 10px;
 }
 
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
+/* Tab content sections */
+.tab-content {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9fbfd;
+  border-radius: 10px;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.05);
 }
 
-input, textarea, select, button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+/* Subheadings inside tab content */
+.tab-content h2 {
+  font-size: 1.5rem;
+  color: #0056b3;
+  margin-bottom: 0.5rem;
+  text-align: center;
 }
 
-button{
-  background: #007BFF;
-  color: white;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  margin-top: 10px;
+.tab-content h3 {
+  font-size: 1.1rem;
+  color: #555;
+  text-align: center;
 }
 
-button:hover{
-  background: #0056b3;
+/* Optional hover effect for future clickable cards or links */
+.tab-content .card {
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 1rem;
 }
 
-nav.tab-nav{
-  margin-bottom: 20px;
+.tab-content .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-
-nav.tab-nav button{
-  margin-right: 10px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  background: #9fe5f9;
-  color: black;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-nav.tab-nav button:hover, nav.tab-nav .logout:hover {
-  background: #555;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-th {
-  background: #f4f4f4;
-}
-.logout{
-    width: 100%;
-    font-weight: bold;
-    border: none;
-    margin-top: 10px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    background: #9fe5f9;
-    color: black;
-    cursor: pointer;
-    text-decoration: none;
-    
-}
-

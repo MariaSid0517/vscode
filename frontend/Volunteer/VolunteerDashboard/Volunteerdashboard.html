@@ -1,50 +1,61 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Volunteer Dashboard</title>
   <link rel="stylesheet" href="volunteerdash.css">
-  <script src="volunteerdash.js" defer></script>
 </head>
 <body>
-  <nav>
-    <h2>Volunteer Dashboard</h2>
-    <ul>
-      <li><a href="#events">Available Events</a></li>
-      <li><a href="#my-history">My History</a></li>
-      <li><a href="../Notification/Notification.html">Notification Center</a></li>
-    </ul>
-  </nav>
+  <div id="navbar-placeholder"></div>
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/navbar.js";
+    loadNavbar();
+  </script>
 
-  <main>
-    <!-- Available Events -->
-    <section id="events">
-      <h3>Available Events</h3>
-      <div id="eventListVolunteer"></div>
+  <main class="dashboard-container">
+    <section class="welcome-section">
+      <h1>Welcome to Healthcare for the Homeless</h1>
+      <p class="welcome-text">
+        Thank you for joining our mission to provide compassionate healthcare and support to
+        individuals experiencing homelessness. Your time and effort make a lasting difference
+        in our community. Explore your dashboard below to view your impact, upcoming events,
+        and participation history.
+      </p>
+    </section>
+    <section class="stats-section">
+      <div class="card">
+        <h2>Total Events Joined</h2>
+        <p id="total-events">0</p>
+      </div>
+      <div class="card">
+        <h2>Hours Contributed</h2>
+        <p id="total-hours">0</p>
+      </div>
+      <div class="card">
+        <h2>Upcoming Events</h2>
+        <p id="upcoming-events">0</p>
+      </div>
     </section>
 
-    <!-- Volunteer History -->
-    <section id="my-history">
-      <h3>My Volunteer History</h3>
-      <table>
+    <section class="events-section">
+      <h2>Recent Event Participation</h2>
+      <table class="event-table">
         <thead>
           <tr>
-            <th>Event</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Skills</th>
-            <th>Urgency</th>
+            <th>Event Name</th>
             <th>Date</th>
+            <th>Role</th>
             <th>Status</th>
           </tr>
         </thead>
-        <tbody id="myHistoryTable">
-          <!-- Populated dynamically -->
+        <tbody id="event-history">
+          <!-- Filled by JS -->
         </tbody>
       </table>
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <script src="/backend/Volunteer/volunteerdash.js"></script>
 </body>
 </html>

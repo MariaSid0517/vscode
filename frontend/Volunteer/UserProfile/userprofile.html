@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
     <title>User Profile Page</title>
-    <link rel = "stylesheet" href="../User Profile/userprofile.css">
-    <script type="text/javascript" src="../login and registration/script.js" defer></script>
+    <link rel = "stylesheet" href="userprofile.css">
 </head>
 <body>
-    <header>
-        <img src="../logo.png" class="logo">
-    </header>
+    <div id="navbar-placeholder"></div>
+    <script type="module">
+        import { loadNavbar } from "../../../backend/Navbar/navbar.js";
+        loadNavbar();
+     </script>
     <div class="main-panel">
         <form id="profileForm">
             <h1>Complete Your Profile</h1>
@@ -132,7 +133,7 @@
             </div>
         </form>
     </div>
-    
- 
+    <script src="/backend/Volunteer/userprofile.js"></script>
+
 </body>
 </html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Notifications</title>
+  <link rel="stylesheet" href="Notifications.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div id="navbar-placeholder"></div>
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/navbar.js";
+    loadNavbar();
+  </script>
+
+  <!-- Notifications Container -->
+  <div class="notifications-container">
+    <h1>Notifications</h1>
+
+    <div id="notificationsList">
+      <!-- Notifications will be injected here -->
+    </div>
+  </div>
+
+  <script src="/backend/Volunteer/notifications.js"></script>
+</body>
+</html>

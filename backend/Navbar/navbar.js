@@ -1,4 +1,3 @@
-// backend/Navbar/loadNavbar.js
 export function loadNavbar() {
   fetch("../Navbar/navbar.html")
     .then(response => response.text())
@@ -8,13 +7,13 @@ export function loadNavbar() {
       placeholder.innerHTML = data;
 
       const navHome = document.getElementById("nav-home");
+      const navProfile = document.getElementById("nav-profile");
       const navEvents = document.getElementById("nav-events");
-      const navNotifications = document.getElementById("nav-notifications");
-      const navMatching = document.getElementById("nav-matching");
       const navHistory = document.getElementById("nav-history");
+      const navNotification = document.getElementById("nav-notifications");
       const navLogout = document.getElementById("nav-logout");
 
-      const navLinks = [navHome, navEvents, navNotifications, navMatching, navHistory, navLogout].filter(Boolean);
+      const navLinks = [navHome, navProfile, navEvents, navHistory, navNotification, navLogout].filter(Boolean);
 
       function setActive(link) {
         navLinks.forEach(l => l.classList.remove("active"));
@@ -24,31 +23,31 @@ export function loadNavbar() {
       // Example: Redirect to pages or show tabs
       if (navHome) {
         navHome.addEventListener("click", () => {
-          window.location.href = "../admindashboard/Admindash.html"; // or showTab("home");
+          window.location.href = "../VolunteerDashboard/Volunteerdashboard.html"; // or showTab("home");
+        });
+      }
+
+      if (navProfile) {
+        navProfile.addEventListener("click", () => {
+          window.location.href = "../UserProfile/userprofile.html";
         });
       }
 
       if (navEvents) {
         navEvents.addEventListener("click", () => {
-          window.location.href = "../Event/EventForm.html";
-        });
-      }
-
-      if (navNotifications) {
-        navNotifications.addEventListener("click", () => {
-          window.location.href = "../Notification/Notification.html";
-        });
-      }
-
-      if (navMatching) {
-        navMatching.addEventListener("click", () => {
-          window.location.href = "../matchForm/matchform.html";
+          window.location.href = "../Events/Event.html";
         });
       }
 
       if (navHistory) {
         navHistory.addEventListener("click", () => {
-          window.location.href = "../adminvolunteerhistory/adminhistory.html";
+          window.location.href = "../volunteer history/history.html";
+        });
+      }
+
+      if (navNotification) {
+        navNotification.addEventListener("click", () => {
+          window.location.href = "../Notification/Notifications.html";
         });
       }
 

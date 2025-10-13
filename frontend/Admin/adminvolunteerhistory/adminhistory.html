@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer Participation History | Admin</title>
+  <link rel="stylesheet" href="../adminvolunteerhistory/VolunteerHistory.css" />
+</head>
+<body>
+  <!-- Navbar placeholder -->
+  <div id="navbar-placeholder"></div>
+
+  <main class="history-container">
+    <h1>Volunteer Participation History</h1>
+    <p class="subtitle">View all volunteers and their participation in events</p>
+
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Volunteer Name</th>
+          <th>Event Name</th>
+          <th>Event Date</th>
+          <th>Location</th>
+          <th>Required Skills</th>
+          <th>Urgency</th>
+          <th>Participation Status</th>
+        </tr>
+      </thead>
+      <tbody id="historyBody">
+        <!-- Populated by JS -->
+      </tbody>
+    </table>
+  </main>
+
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
+    loadNavbar();
+  </script>
+
+  <script src="../../../backend/Admin/VolunteerHistory.js" defer></script>
+</body>
+</html>

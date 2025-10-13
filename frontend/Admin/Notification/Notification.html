@@ -3,47 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notifications</title>
+  <title>Admin Notifications | Healthcare for the Homeless</title>
   <link rel="stylesheet" href="Notification.css">
 </head>
 <body>
-  <header>
-    <img src="../logo.png" class="logo">
-    <nav class="navigation">
-      <a href="../VolunteerDashboard/Volunteerdashboard.html">Volunteer Dashboard</a>
-    </nav>
-  </header>
+  <div id="navbar-placeholder"></div>
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
+    loadNavbar();
+  </script>
 
-  <h1>Volunteer Notifications</h1>
+  <main class="notifications-container">
+    <section class="header-section">
+      <h1>Admin Notifications Center</h1>
+      <p>
+        Send notifications to volunteers about new events, schedule changes, or important reminders.
+      </p>
+    </section>
 
-  <div class="notifications-container">
+    <section class="send-section">
+      <form id="notificationForm" class="notification-form">
+        <h2>Send a Notification</h2>
 
-    <!-- Example Notification -->
-    <div class="notification">
-      <h3>New Event Assignment</h3>
-      <p>You have been assigned to <strong>Community Clean-Up Drive</strong>.</p>
-      <p><strong>Date:</strong> October 5, 2025</p>
-      <p><strong>Location:</strong> Central Park, Downtown</p>
-      <div class="timestamp">Posted: Sept 22, 2025 - 10:00 AM</div>
-    </div>
+        <div class="form-group">
+          <label for="volunteer">Select Volunteer</label>
+          <select id="volunteer" required>
+            <option value="">-- Choose Volunteer --</option>
+            <option value="Maria Siddeeque">Maria Siddeeque</option>
+            <option value="Matthew Reyna">Matthew Reyna</option>
+            <option value="Madeeha Siddeeque">Madeeha Siddeeque</option>
+          </select>
+        </div>
 
-    <!-- Warning Example -->
-    <div class="notification warning">
-      <h3>Event Update</h3>
-      <p>The event <strong>Food Bank Assistance</strong> has been rescheduled.</p>
-      <p><strong>New Date:</strong> October 10, 2025</p>
-      <div class="timestamp">Posted: Sept 23, 2025 - 2:15 PM</div>
-    </div>
+        <div class="form-group">
+          <label for="notificationType">Notification Type</label>
+          <select id="notificationType" required>
+            <option value="">-- Select Type --</option>
+            <option value="Event Assignment">Event Assignment</option>
+            <option value="Schedule Update">Schedule Update</option>
+            <option value="Reminder">Reminder</option>
+          </select>
+        </div>
 
-    <!-- Danger Example -->
-    <div class="notification danger">
-      <h3>Reminder</h3>
-      <p>Your volunteer participation for <strong>Blood Donation Camp</strong> is tomorrow.</p>
-      <p><strong>Date:</strong> Sept 25, 2025</p>
-      <div class="timestamp">Posted: Sept 24, 2025 - 9:30 AM</div>
-    </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" placeholder="Enter notification details..." rows="4" required></textarea>
+        </div>
 
-  </div>
+        <button type="submit" class="send-btn">Send Notification</button>
+      </form>
+    </section>
 
+    <section class="history-section">
+      <h2>Sent Notifications</h2>
+      <table class="notification-table">
+        <thead>
+          <tr>
+            <th>Volunteer</th>
+            <th>Type</th>
+            <th>Message</th>
+            <th>Date Sent</th>
+          </tr>
+        </thead>
+        <tbody id="notificationHistory">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="/backend/Admin/notifications.js"></script>
 </body>
 </html>

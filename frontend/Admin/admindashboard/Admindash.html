@@ -5,6 +5,7 @@
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="admindash.css">
   <script type="module" src="../../../backend/Admin/admin.js" defer></script>
+  
 </head>
 <body>
   <!-- Navbar placeholder -->
@@ -13,93 +14,16 @@
   <div class="container">
     <h1>Administrator Dashboard</h1>
 
-    <nav class="tab-nav">
-      <a href="../../login and registration/login.html" class="logout">Logout</a>
-    </nav>
-
-    <!-- ✅ Home Tab -->
+    <!-- Home Tab -->
     <div id="home" class="tab-content">
       <h2>Home</h2>
-      <p>This is the home page.</p>
+      <h3>This is the home page.</h3>
     </div>
 
-    <!-- Event Management -->
-    <div id="events" class="tab-content" style="display:none;">
-      <h2>Create Event</h2>
-      <form id="eventForm">
-        <label>Event Name</label>
-        <input type="text" id="eventName" maxlength="100" required>
-
-        <label>Event Description</label>
-        <textarea id="eventDescription" required></textarea>
-
-        <label>Location</label>
-        <textarea id="eventLocation" required></textarea>
-
-        <label>Required Skills</label>
-        <select id="eventSkills" multiple required>
-          <option value="communication">Communication</option>
-          <option value="teamwork">Teamwork</option>
-          <option value="leadership">Leadership</option>
-          <option value="technical">Technical</option>
-          <option value="problem-solving">Problem-Solving</option>
-        </select>
-
-        <label>Urgency</label>
-        <select id="eventUrgency" required>
-          <option value="">--Select Urgency--</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="critical">Critical</option>
-        </select>
-
-        <label>Event Date</label>
-        <input type="date" id="eventDate" required>
-
-        <button type="submit">Create Event</button>
-      </form>
-
-      <h3>Existing Events</h3>
-      <ul id="eventList"></ul>
-    </div>
-
-    <!-- Volunteer Matching -->
-    <div id="matching" class="tab-content" style="display:none;">
-      <h2>Volunteer Matching</h2>
-      <form id="matchingForm">
-        <label>Volunteer Name</label>
-        <select id="volunteerName"></select>
-
-        <label>Matched Event</label>
-        <select id="matchedEvent"></select>
-
-        <button type="submit">Match Volunteer</button>
-      </form>
-
-      <h3>Matches</h3>
-      <ul id="matchList"></ul>
-    </div>
-
-    <!-- Volunteer History -->
-    <div id="history" class="tab-content" style="display:none;">
-      <h2>Volunteer History</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Volunteer</th>
-            <th>Event</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Skills</th>
-            <th>Urgency</th>
-            <th>Date</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="historyTable"></tbody>
-      </table>
-    </div>
+    <script type="module">
+      import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
+      loadNavbar();
+    </script>  
   </div>
 </body>
 </html>

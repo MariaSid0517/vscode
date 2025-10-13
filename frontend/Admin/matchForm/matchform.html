@@ -1,52 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Volunteer Matching Form</title>
-    <link rel="stylesheet" href="../matchform/matchform.css">
-    <script type="text/javascript" src="../matchform/matchform.js" defer></script>
+  <meta charset="UTF-8">
+  <title>Volunteer Matching | Admin</title>
+  <link rel="stylesheet" href="matchform.css">
 </head>
 <body>
-    <header>
-        <img src="../logo.png" class="logo">
-        <nav class="navigation">
-            <a href="../User Profile/userprofile.html">Profile</a>
-            <a href="../Event/EventForm.html">Event Management</a>
-            <a href="../matchForm/matchform.html">Volunteer Matching</a>
-            <a href="../Notification/Notification.html">Notifications</a>
-            <a href="../volunteer history/history.html">History</a>
-        </nav>
-    </header>
+  <!-- Navbar placeholder -->
+  <div id="navbar-placeholder"></div>
 
-    <section id="volunteer-matching">
-        <h2 class="match"> Volunteer Matching Form</h2>
-        <p class = "pmatch">A form where administrators can view and match volunteers to events based on their profiles and event requirements.</p>
+  <section class="match-container">
+    <h2>Volunteer Matching</h2>
+    <p>Select a volunteer and event to create a match.</p>
 
-        <form id="volunteerForm">
-            <!-- Volunteer Name (auto-filled) -->
-            <div class="form-group">
-  <label for="volunteerName">Volunteer Name:</label>
-  <select id="volunteerName" name="volunteerName">
-    <option value="">-- Select Volunteer --</option>
-    <option value="Maria">Maria Siddeeque</option>
-    <option value="Matthew">Matthew Reyna</option>
-    <option value="Madeeha">Madeeha Siddeeque</option>
-  </select>
-</div>
+    <form id="matchingForm">
+      <div class="form-group">
+        <label for="volunteerSelect">Volunteer Name</label>
+        <select id="volunteerSelect" required></select>
+      </div>
 
-            <!-- Matched Event (auto-filled based on volunteer profile) -->
-            <div class="form-group">
-  <label for="matchedEvent">Matched Event:</label>
-  <select id="matchedEvent" name="matchedEvent">
-    <option value="">-- Select Event --</option>
-    <option value="Mental Health Outreach">Mental Health Outreach</option>
-    <option value="Health Clinic">Health Clinic</option>
-    <option value="Fundraiser Gala">Fundraiser Gala</option>
-  </select>
-</div>
+      <div class="form-group">
+        <label for="eventSelect">Event Name</label>
+        <select id="eventSelect" required></select>
+      </div>
 
-            <button type="submit" class="btn">Confirm Match</button>
-        </form>
-    </section>
+      <button type="submit" class="btn">Match Volunteer</button>
+    </form>
 
+    <h3>Matched Volunteers</h3>
+    <ul id="matchList"></ul>
+  </section>
+
+  <!-- Load Navbar -->
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
+    loadNavbar();
+  </script>
+
+  <!-- Matching Logic -->
+  <script type="text/javascript" src="../../../backend/Admin/matchform.js" defer></script>
 </body>
 </html>
