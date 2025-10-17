@@ -1,45 +1,88 @@
-// backend/login_and_registration/login.js
-function validateLoginFields(email, password, role) {
+// backend/Login/login.js
+
+// ---- Validation stays the same (used by tests)
+function validateLoginFields(email, password /* role not used for login */) {
   const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
-  if (!email || !password || !role) {
+  if (!email || !password) {
     return { valid: false, error: "All fields are required." };
   }
-
   if (!emailPattern.test(email)) {
     return { valid: false, error: "Invalid email format." };
   }
-
   if (password.length < 6) {
     return { valid: false, error: "Password must be at least 6 characters." };
   }
-
   return { valid: true };
 }
 
 if (typeof window !== "undefined") {
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("loginform");
+  (function () {
+    const API_BASE = "http://localhost:3001";
 
-    if (form) {
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
+    // From /frontend/login and registration/login.html to dashboards
+    const DASHBOARD_ROUTES = {
+      volunteer: "../Volunteer/VolunteerDashboard/Volunteerdashboard.html",
+      admin: "../Admin/AdminDashboard.html", // change if your Admin file differs
+    };
 
-        const email = document.getElementById("loginemail").value.trim();
-        const password = document.getElementById("loginpassword").value.trim();
-        const role = document.getElementById("loginrole").value;
+    function $(id) {
+      return document.getElementById(id);
+    }
 
-        const validation = validateLoginFields(email, password, role);
-        if (!validation.valid) {
-          alert(validation.error);
-          return;
+    async function handleLogin(e) {
+      e.preventDefault();
+
+      const email = $("loginemail")?.value?.trim() || "";
+      const password = $("loginpassword")?.value || "";
+
+      // keep using the same validator
+      const validation = validateLoginFields(email, password);
+      if (!validation.valid) {
+        alert(validation.error);
+        return;
+      }
+
+      // In Jest/jsdom, don't hit network or redirect (keep unit tests stable)
+      if (window.__JSDOM_TEST__) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => null);
+          const msg =
+            data?.message ||
+            data?.errors?.[0]?.message ||
+            `HTTP ${res.status}`;
+          throw new Error(msg);
         }
 
-        alert(`Login successful as ${role}!`);
-        // Actual login logic (fetch/backend) would go here
-      });
+        const data = await res.json(); // { userId, token, role }
+        try {
+          localStorage.setItem("auth", JSON.stringify(data));
+        } catch {}
+
+        const target =
+          DASHBOARD_ROUTES[data.role] || DASHBOARD_ROUTES.volunteer;
+        window.location.assign(target);
+      } catch (err) {
+        console.error(err);
+        alert(`Login failed: ${err.message}`);
+      }
     }
-  });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = $("loginform");
+      if (form) form.addEventListener("submit", handleLogin);
+    });
+  })();
 }
 
-module.exports = { validateLoginFields };
+if (typeof module !== "undefined") {
+  module.exports = { validateLoginFields };
+}
