@@ -1,4 +1,3 @@
-// Hardcoded data
 const volunteers = [
   { id: 1, name: "Maria Siddeeque", skills: ["Organization", "Public Speaking"] },
   { id: 2, name: "Matthew Reyna", skills: ["Logistics", "Event Setup"] },
@@ -20,6 +19,11 @@ function initMatchForm() {
   const eventSelect = document.getElementById("eventSelect");
   const matchList = document.getElementById("matchList");
   const matchingForm = document.getElementById("matchingForm");
+
+  if (!volunteerSelect || !eventSelect || !matchList || !matchingForm) {
+    console.error("Match form elements not found in the DOM.");
+    return;
+  }
 
   // Populate dropdowns
   volunteers.forEach(v => {
@@ -95,7 +99,9 @@ function initMatchForm() {
   updateMatchList();
 }
 
-// Export for testing
+document.addEventListener("DOMContentLoaded", initMatchForm);
+
+// Export for testing (CommonJS)
 if (typeof module !== "undefined") {
   module.exports = { initMatchForm, volunteers, events, matches };
 }
