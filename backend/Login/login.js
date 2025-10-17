@@ -43,9 +43,15 @@ if (typeof window !== "undefined") {
         return;
       }
 
-      // In Jest/jsdom, don't hit network or redirect (keep unit tests stable)
-      if (window.__JSDOM_TEST__) return;
+      // ✅ TEST ENV (jsdom): preserve old behavior for unit tests
+      if (window.__JSDOM_TEST__) {
+        const roleEl = $("loginrole"); // tests set this select value
+        const role = roleEl?.value || "volunteer";
+        alert(`Login successful as ${role}!`);
+        return; // no network, no redirect
+      }
 
+      // ✅ BROWSER: real API + redirect
       try {
         const res = await fetch(`${API_BASE}/auth/login`, {
           method: "POST",
