@@ -1,8 +1,8 @@
 /**
  * @jest-environment jsdom
  */
-import fs from "fs";
-import path from "path";
+const fs = require("fs");
+const path = require("path");
 
 describe("Volunteer Event Module", () => {
   let scriptContent;
@@ -14,7 +14,6 @@ describe("Volunteer Event Module", () => {
   });
 
   beforeEach(() => {
-    // Set up a mock table structure
     document.body.innerHTML = `
       <table id="eventsTable">
         <tbody></tbody>

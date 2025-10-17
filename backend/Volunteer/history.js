@@ -1,60 +1,68 @@
 document.addEventListener("DOMContentLoaded", () => {
   const historyBody = document.getElementById("historyBody");
 
-  // Hardcoded data for now (will be replaced by database later)
-  const volunteerHistory = [
+  //  Default hardcoded matches
+  const defaultMatches = [
     {
+      volunteerName: "Maria Siddeeque",
       eventName: "Community Cleanup",
-      description: "Neighborhood cleanup to promote environmental awareness.",
+      eventDate: "2025-09-12",
       location: "Houston Park, TX",
       skills: ["Teamwork", "Leadership"],
       urgency: "Medium",
-      date: "2025-09-12",
       status: "completed",
     },
     {
+      volunteerName: "Matthew Reyna",
       eventName: "Food Bank Support",
-      description: "Assisting in organizing and distributing food donations.",
+      eventDate: "2025-08-21",
       location: "Downtown Food Bank",
       skills: ["Communication", "Organization"],
       urgency: "High",
-      date: "2025-08-21",
       status: "pending",
     },
     {
+      volunteerName: "Madeeha Siddeeque",
       eventName: "Senior Center Tech Help",
-      description: "Helping seniors learn how to use smartphones and apps.",
+      eventDate: "2025-07-14",
       location: "Sunrise Senior Center",
       skills: ["Technical", "Patience"],
       urgency: "Low",
-      date: "2025-07-14",
       status: "completed",
     },
     {
+      volunteerName: "Jane Doe",
       eventName: "Disaster Relief Drive",
-      description: "Collecting and sorting emergency supplies for affected families.",
+      eventDate: "2025-05-09",
       location: "Community Hall",
       skills: ["Organization", "Teamwork"],
       urgency: "Critical",
-      date: "2025-05-09",
       status: "cancelled",
-    }
+    },
   ];
 
-  // Populate the table
-  volunteerHistory.forEach(event => {
-    const row = document.createElement("tr");
+  //  If localStorage has matches, use those; otherwise use defaults
+  const storedMatches = JSON.parse(localStorage.getItem("matches"));
+  const matches =
+    storedMatches && Array.isArray(storedMatches) && storedMatches.length > 0
+      ? storedMatches
+      : defaultMatches;
 
-    row.innerHTML = `
-      <td>${event.eventName}</td>
-      <td>${event.description}</td>
-      <td>${event.location}</td>
-      <td>${event.skills.join(", ")}</td>
-      <td>${event.urgency}</td>
-      <td>${event.date}</td>
-      <td class="status ${event.status}">${event.status}</td>
+  // 🧼 Clear the table before rendering
+  historyBody.innerHTML = "";
+
+  // 📝 Render the matches
+  matches.forEach((record) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${record.volunteerName}</td>
+      <td>${record.eventName}</td>
+      <td>${record.eventDate}</td>
+      <td>${record.location}</td>
+      <td>${record.skills.join(", ")}</td>
+      <td>${record.urgency}</td>
+      <td class="status ${record.status.toLowerCase()}">${record.status}</td>
     `;
-
-    historyBody.appendChild(row);
+    historyBody.appendChild(tr);
   });
 });
