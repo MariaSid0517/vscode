@@ -1,21 +1,27 @@
-const sqlite3 = require("sqlite3").verbose();
+// db.js
+require('dotenv').config();
+const mysql = require('mysql2/promise'); // 👈 use the promise version
 
-const db = new sqlite3.Database("./users.db", (err) => {
-  if (err) {
-    console.error("Database connection failed:", err);
-  } else {
-    console.log("Connected to SQLite database.");
-  }
+// Create a connection pool (recommended for multi-user projects)
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
+  ssl: { rejectUnauthorized: true }, // Azure requires SSL
+  connectionLimit: 10
 });
 
-// Create users table if not exists
-db.run(`
-  CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    email TEXT UNIQUE,
-    password TEXT,
-    role TEXT CHECK(role IN ('admin','volunteer')) NOT NULL
-  )
-`);
+// Test the connection
+(async () => {
+  try {
+    const conn = await db.getConnection();
+    console.log('✅ Connected to MySQL database!');
+    conn.release();
+  } catch (err) {
+    console.error('❌ Database connection failed:', err.message);
+  }
+})();
 
 module.exports = db;
