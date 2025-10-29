@@ -9,7 +9,7 @@ const db = mysql.createPool({
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306,
-  ssl: { rejectUnauthorized: false }, // ✅ Fix for self-signed SSL
+  ssl: { rejectUnauthorized: false }, //  Fix for self-signed SSL
   connectionLimit: 10
 });
 

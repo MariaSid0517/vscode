@@ -17,7 +17,7 @@ app.use(express.json());      // Parse JSON request bodies
 
 // Health check route
 app.get('/', (req, res) => {
-  res.send('Server is running and connected to Azure MySQL ✅');
+  res.send('Server is running and connected to Azure MySQL ');
 });
 
 // Register routes
