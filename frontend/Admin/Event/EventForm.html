@@ -1,72 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Form | Admin</title>
-  <link rel="stylesheet" href="../Event/event.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Management Form</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f5f7; margin: 0; padding: 0; }
+    form {
+      width: 60%; margin: 40px auto; background: #fff; padding: 25px;
+      border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, textarea, select, button {
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    button {
+      background: #007bff; color: #fff; cursor: pointer;
+      margin-top: 20px; border: none; padding: 10px;
+    }
+    button:hover { background: #0056b3; }
+    h2 { text-align: center; }
+    #eventsContainer {
+      width: 80%; margin: 40px auto; background: #fff; padding: 20px;
+      border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .event-card {
+      border-bottom: 1px solid #eee; padding: 15px 0;
+    }
+    .event-card:last-child { border-bottom: none; }
+    .event-card h3 { margin: 0 0 5px 0; }
+    .event-card p { margin: 4px 0; color: #333; }
+  </style>
 </head>
 <body>
-  <!-- Navbar placeholder -->
-  <div id="navbar-placeholder"></div>
+  <form id="eventForm">
+    <h2>Event Management Form</h2>
 
-  <div class="container">
-    <form id="eventForm" class="event-form">
-      <h1>Event Management Form</h1>
+    <label for="name">Event Name</label>
+    <input type="text" id="name" name="name" required>
 
-      <!-- Event Name -->
-      <label for="eventName">Event Name</label>
-      <input type="text" id="eventName" name="eventName" maxlength="100" required>
+    <label for="description">Event Description</label>
+    <textarea id="description" name="description" required></textarea>
 
-      <!-- Event Description -->
-      <label for="eventDescription">Event Description</label>
-      <textarea id="eventDescription" name="eventDescription" rows="4" required></textarea>
+    <label for="date">Event Date</label>
+    <input type="date" id="date" name="date" required>
 
-      <!-- Location -->
-      <label for="eventLocation">Location</label>
-      <textarea id="eventLocation" name="eventLocation" rows="3" required></textarea>
+    <label for="location">Location</label>
+    <input type="text" id="location" name="location" required>
 
-      <!-- Required Skills -->
-      <label for="requiredSkills">Required Skills (Ctrl/Cmd to select multiple)</label>
-      <select id="requiredSkills" name="requiredSkills[]" multiple size="5" required>
-        <option value="Communication">Communication</option>
-        <option value="Teamwork">Teamwork</option>
-        <option value="Leadership">Leadership</option>
-        <option value="Technical">Technical</option>
-        <option value="Problem-Solving">Problem-Solving</option>
-        <option value="Medical Support">Medical Support</option>
-        <option value="Fundraising">Fundraising</option>
-      </select>
+    <label for="state">State</label>
+    <select id="state" name="state" required>
+      <option value="">Loading states...</option>
+    </select>
 
-      <!-- Urgency -->
-      <label for="urgency">Urgency</label>
-      <select id="urgency" name="urgency" required>
-        <option value="">-- Select Urgency --</option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-        <option value="Critical">Critical</option>
-      </select>
+    <label for="max_volunteers">Max Volunteers</label>
+    <input type="number" id="max_volunteers" name="max_volunteers" placeholder="e.g. 30">
 
-      <!-- Event Date -->
-      <label for="eventDate">Event Date</label>
-      <input type="date" id="eventDate" name="eventDate" required>
+    <label for="required_skills">Required Skills</label>
+    <input type="text" id="required_skills" name="required_skills" placeholder="e.g. Teamwork, Leadership">
 
-      <!-- Submit Button -->
-      <button type="submit">Submit Event</button>
-    </form>
+    <label for="urgency">Urgency</label>
+    <select id="urgency" name="urgency">
+      <option value="">Select urgency</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
 
-    <div class="event-list">
-      <h3>Existing Events</h3>
-      <ul id="eventList"></ul>
-    </div>
+    <button type="submit">Submit Event</button>
+  </form>
+
+  <div id="eventsContainer">
+    <h2>Existing Events</h2>
+    <div id="eventsList"></div>
   </div>
 
-  <script type="module">
-    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
-    loadNavbar();
+  <script>
+    const API_URL = 'http://localhost:3000/events';
+    const STATES_URL = 'http://localhost:3000/states';
+
+    // 🟢 Load states for dropdown
+    async function loadStates() {
+      try {
+        const res = await fetch(STATES_URL);
+        const states = await res.json();
+
+        const select = document.getElementById('state');
+        select.innerHTML = '<option value="">Select a state</option>';
+
+        states.forEach(st => {
+          const option = document.createElement('option');
+          option.value = st.state_id;
+          option.textContent = `${st.state_name} (${st.state_code})`;
+          select.appendChild(option);
+        });
+      } catch (err) {
+        console.error('💥 Error loading states:', err);
+        document.getElementById('state').innerHTML = '<option>Error loading states</option>';
+      }
+    }
+
+    // 🟢 Submit new event
+    document.getElementById('eventForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const eventData = {
+        name: document.getElementById('name').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        date: document.getElementById('date').value,
+        location: document.getElementById('location').value.trim(),
+        state_id: parseInt(document.getElementById('state').value) || null,
+        max_volunteers: parseInt(document.getElementById('max_volunteers').value) || null,
+        required_skills: document.getElementById('required_skills').value.trim(),
+        urgency: document.getElementById('urgency').value.trim()
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(eventData)
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('✅ Event added successfully!');
+          loadEvents();
+          document.getElementById('eventForm').reset();
+        } else {
+          alert('❌ Error: ' + JSON.stringify(data.errors || data.error));
+        }
+      } catch (err) {
+        console.error('💥 Fetch failed:', err);
+        alert('❌ Could not connect to backend.');
+      }
+    });
+
+    // 🟢 Load events
+    async function loadEvents() {
+      try {
+        const response = await fetch(API_URL);
+        const events = await response.json();
+
+        const eventsList = document.getElementById('eventsList');
+        eventsList.innerHTML = '';
+
+        if (events.length === 0) {
+          eventsList.innerHTML = '<p>No events found.</p>';
+          return;
+        }
+
+        events.forEach(event => {
+          const div = document.createElement('div');
+          div.classList.add('event-card');
+          div.innerHTML = `
+            <h3>${event.event_name}</h3>
+            <p><strong>Description:</strong> ${event.event_description}</p>
+            <p><strong>Date:</strong> ${new Date(event.event_date).toLocaleDateString()}</p>
+            <p><strong>Location:</strong> ${event.location}</p>
+            <p><strong>State:</strong> ${event.state_name || 'N/A'}</p>
+            <p><strong>Max Volunteers:</strong> ${event.max_volunteers || 'N/A'}</p>
+            <p><strong>Required Skills:</strong> ${event.required_skills || 'N/A'}</p>
+            <p><strong>Urgency:</strong> ${event.urgency || 'N/A'}</p>
+          `;
+          eventsList.appendChild(div);
+        });
+      } catch (err) {
+        console.error('💥 Error fetching events:', err);
+        document.getElementById('eventsList').innerHTML = '<p>Error loading events.</p>';
+      }
+    }
+
+    // 🟢 Initialize page
+    loadStates();
+    loadEvents();
   </script>
-  
-  <script src="../../../backend/Admin/event.js" defer></script>
 </body>
 </html>

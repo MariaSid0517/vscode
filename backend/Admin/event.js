@@ -1,26 +1,25 @@
 function validateEvent(event) {
   const errors = [];
 
-  // Field type validations first
+  // Type validations
   if (event.name && typeof event.name !== "string") errors.push("Event name must be a string.");
   if (event.description && typeof event.description !== "string") errors.push("Description must be a string.");
   if (event.location && typeof event.location !== "string") errors.push("Location must be a string.");
-  if (event.skills && !Array.isArray(event.skills)) errors.push("Skills must be an array.");
-  if (event.urgency && typeof event.urgency !== "string") errors.push("Urgency must be a string.");
   if (event.date && isNaN(Date.parse(event.date))) errors.push("Event date must be valid.");
 
-  // Required field validations
-  if (!event.name || (typeof event.name === "string" && event.name.trim() === "")) errors.push("Event name is required.");
-  if (!event.description || (typeof event.description === "string" && event.description.trim() === "")) errors.push("Description is required.");
-  if (!event.location || (typeof event.location === "string" && event.location.trim() === "")) errors.push("Location is required.");
-  if (!event.skills || !Array.isArray(event.skills) || event.skills.length === 0) errors.push("At least one skill is required.");
-  if (!event.urgency || (typeof event.urgency === "string" && event.urgency.trim() === "")) errors.push("Urgency is required.");
+  // Required fields
+  if (!event.name || event.name.trim() === "") errors.push("Event name is required.");
+  if (!event.description || event.description.trim() === "") errors.push("Description is required.");
+  if (!event.location || event.location.trim() === "") errors.push("Location is required.");
   if (!event.date || isNaN(Date.parse(event.date))) errors.push("Event date is required or invalid.");
 
-  // Field length validations
-  if (typeof event.name === "string" && event.name.length > 100) errors.push("Event name cannot exceed 100 characters.");
-  if (typeof event.description === "string" && event.description.length > 500) errors.push("Description cannot exceed 500 characters.");
-  if (typeof event.location === "string" && event.location.length > 200) errors.push("Location cannot exceed 200 characters.");
+  // Optional: numeric checks
+  if (event.max_volunteers && isNaN(event.max_volunteers)) errors.push("Max volunteers must be a number.");
+
+  // Length validations
+  if (event.name && event.name.length > 150) errors.push("Event name cannot exceed 150 characters.");
+  if (event.description && event.description.length > 1000) errors.push("Description cannot exceed 1000 characters.");
+  if (event.location && event.location.length > 255) errors.push("Location cannot exceed 255 characters.");
 
   return errors;
 }
