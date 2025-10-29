@@ -1,6 +1,6 @@
 // db.js
 require('dotenv').config();
-const mysql = require('mysql2/promise'); // 👈 use the promise version
+const mysql = require('mysql2/promise'); // use the promise version
 
 // Create a connection pool (recommended for multi-user projects)
 const db = mysql.createPool({
@@ -17,10 +17,10 @@ const db = mysql.createPool({
 (async () => {
   try {
     const conn = await db.getConnection();
-    console.log('✅ Connected to MySQL database!');
+    console.log('Connected to MySQL database!');
     conn.release();
   } catch (err) {
-    console.error('❌ Database connection failed:', err.message);
+    console.error(' Database connection failed:', err.message);
   }
 })();
 

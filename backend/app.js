@@ -7,7 +7,7 @@ app.use(express.json());
 
 // Simple test route
 app.get('/', (req, res) => {
-  res.send('Server is running and connected to Azure MySQL ✅');
+  res.send('Server is running and connected to Azure MySQL ');
 });
 
 // Example route: fetch all users
@@ -22,4 +22,4 @@ app.get('/users', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));

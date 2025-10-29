@@ -1,5 +1,5 @@
 // backend/jest.setup.js
-// ✅ Runs before every Jest test (see package.json "setupFiles")
+//  Runs before every Jest test (see package.json "setupFiles")
 
 // -----------------------------------------------------------------------------
 // Polyfill TextEncoder / TextDecoder (required by jsdom in Node environments)
@@ -10,7 +10,7 @@ if (!global.TextEncoder) global.TextEncoder = TextEncoder;
 if (!global.TextDecoder) global.TextDecoder = TextDecoder;
 
 // -----------------------------------------------------------------------------
-// ✅ Global window and alert mock
+//  Global window and alert mock
 // -----------------------------------------------------------------------------
 if (!global.window) global.window = {};
 
@@ -26,6 +26,6 @@ Object.defineProperty(window, "alert", {
 global.alert = window.alert;
 
 // -----------------------------------------------------------------------------
-// ✅ Mark as JSDOM environment (used in HTML to skip script loading)
+//  Mark as JSDOM environment (used in HTML to skip script loading)
 // -----------------------------------------------------------------------------
 window.__JSDOM_TEST__ = true;
