@@ -1,25 +1,51 @@
+//  Load environment variables and dependencies
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const db = require('./db');
+
+//Import routes
+const eventRoutes = require('./routes/eventRoutes');
+const stateRoutes = require('./routes/stateRoutes'); //New states route
+
+// Initialize the app
 const app = express();
 
-app.use(express.json());
+// Middleware setup
+app.use(cors());              // Allow frontend (Live Server) to access backend
+app.use(express.json());      // Parse JSON request bodies
 
-// Simple test route
+// Health check route
 app.get('/', (req, res) => {
-  res.send('Server is running and connected to Azure MySQL ✅');
+  res.send('Server is running and connected to Azure MySQL.');
 });
 
-// Example route: fetch all users
+// Quick database connectivity test
+app.get('/test-db', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT NOW() AS server_time;');
+    res.json({ connected: true, server_time: rows[0].server_time });
+  } catch (err) {
+    console.error('Database test error:', err);
+    res.status(500).json({ connected: false, error: err.message });
+  }
+});
+
+// Register routes
+app.use('/events', eventRoutes);   // Event CRUD endpoints
+app.use('/states', stateRoutes);   //  New States API
+
+// Optional: Example route to fetch users
 app.get('/users', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM UserCredentials;');
+    const [rows] = await db.query('SELECT * FROM usercredentials;');
     res.json(rows);
   } catch (err) {
-    console.error(err);
+    console.error(' User fetch failed:', err);
     res.status(500).json({ error: 'Database query failed' });
   }
 });
 
+// Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Server running on port ${PORT}`));
