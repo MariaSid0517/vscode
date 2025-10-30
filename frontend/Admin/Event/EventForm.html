@@ -80,7 +80,7 @@
     const API_URL = 'http://localhost:3000/events';
     const STATES_URL = 'http://localhost:3000/states';
 
-    // 🟢 Load states for dropdown
+    // Load states for dropdown
     async function loadStates() {
       try {
         const res = await fetch(STATES_URL);
@@ -96,12 +96,12 @@
           select.appendChild(option);
         });
       } catch (err) {
-        console.error('💥 Error loading states:', err);
+        console.error(' Error loading states:', err);
         document.getElementById('state').innerHTML = '<option>Error loading states</option>';
       }
     }
 
-    // 🟢 Submit new event
+    //  Submit new event
     document.getElementById('eventForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -125,19 +125,19 @@
         const data = await response.json();
 
         if (response.ok) {
-          alert('✅ Event added successfully!');
+          alert(' Event added successfully!');
           loadEvents();
           document.getElementById('eventForm').reset();
         } else {
-          alert('❌ Error: ' + JSON.stringify(data.errors || data.error));
+          alert(' Error: ' + JSON.stringify(data.errors || data.error));
         }
       } catch (err) {
-        console.error('💥 Fetch failed:', err);
-        alert('❌ Could not connect to backend.');
+        console.error(' Fetch failed:', err);
+        alert(' Could not connect to backend.');
       }
     });
 
-    // 🟢 Load events
+    //  Load events
     async function loadEvents() {
       try {
         const response = await fetch(API_URL);
@@ -167,12 +167,12 @@
           eventsList.appendChild(div);
         });
       } catch (err) {
-        console.error('💥 Error fetching events:', err);
+        console.error(' Error fetching events:', err);
         document.getElementById('eventsList').innerHTML = '<p>Error loading events.</p>';
       }
     }
 
-    // 🟢 Initialize page
+    //  Initialize page
     loadStates();
     loadEvents();
   </script>
