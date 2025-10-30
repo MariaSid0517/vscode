@@ -48,10 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
       ? storedMatches
       : defaultMatches;
 
-  // 🧼 Clear the table before rendering
+  //  Clear the table before rendering
   historyBody.innerHTML = "";
 
-  // 📝 Render the matches
+  //  Render the matches
   matches.forEach((record) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `

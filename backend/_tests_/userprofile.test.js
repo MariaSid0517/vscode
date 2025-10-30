@@ -53,14 +53,14 @@ describe("Volunteer User Profile", () => {
     window = dom.window;
     document = window.document;
 
-    // ✅ Mark this as a JSDOM test instance so app code skips real redirects
+    //  Mark this as a JSDOM test instance so app code skips real redirects
     window.__JSDOM_TEST__ = true;
 
-    // ✅ Mock alert BEFORE running script
+    //  Mock alert BEFORE running script
     alertMock = jest.fn();
     window.alert = alertMock;
 
-    // ✅ Mock localStorage
+    //  Mock localStorage
     const store = {};
     Object.defineProperty(window, "localStorage", {
       value: {
@@ -74,12 +74,12 @@ describe("Volunteer User Profile", () => {
       configurable: true,
     });
 
-    // ✅ Preload profile if requested
+    //  Preload profile if requested
     if (preloadProfile) {
       window.localStorage.setItem("volunteerProfile", JSON.stringify(preloadProfile));
     }
 
-    // ✅ Run the script inside this DOM
+    //  Run the script inside this DOM
     const runScript = new Function("window", `
       const document = window.document;
       ${jsCode}
@@ -117,7 +117,7 @@ describe("Volunteer User Profile", () => {
     expect(saved).not.toBeNull();
     expect(saved.name).toBe("Jane Doe");
 
-    // ✅ In test mode, the app writes the redirect URL here:
+    //  In test mode, the app writes the redirect URL here:
     expect(window.__lastNavigatedTo).toBe("volunteerdash.html");
   });
 
@@ -190,14 +190,14 @@ describe("Volunteer User Profile", () => {
     window = dom.window;
     document = window.document;
 
-    // ✅ Mark this as a JSDOM test instance so app code skips real redirects
+    //  Mark this as a JSDOM test instance so app code skips real redirects
     window.__JSDOM_TEST__ = true;
 
-    // ✅ Mock alert BEFORE running script
+    //  Mock alert BEFORE running script
     alertMock = jest.fn();
     window.alert = alertMock;
 
-    // ✅ Mock localStorage
+    //  Mock localStorage
     const store = {};
     Object.defineProperty(window, "localStorage", {
       value: {
@@ -211,12 +211,12 @@ describe("Volunteer User Profile", () => {
       configurable: true,
     });
 
-    // ✅ Preload profile if requested
+    //  Preload profile if requested
     if (preloadProfile) {
       window.localStorage.setItem("volunteerProfile", JSON.stringify(preloadProfile));
     }
 
-    // ✅ Run the script inside this DOM
+    //  Run the script inside this DOM
     const runScript = new Function("window", `
       const document = window.document;
       ${jsCode}

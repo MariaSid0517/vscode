@@ -6,9 +6,9 @@
     box-sizing: border-box;
 }
 body {
-  font-family: "Segoe UI", sans-serif;
-  background-color: #f5f6fa;
-  margin: 0;
+  font-family: Arial, sans-serif; 
+  background: #f4f5f7; 
+  margin: 0; 
   padding: 0;
 }
 
@@ -22,7 +22,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-h1 {
+h2 {
   text-align: center;
   color: #2c3e50;
 }

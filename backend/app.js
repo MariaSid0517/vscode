@@ -7,6 +7,7 @@ const db = require('./db');
 //Import routes
 const eventRoutes = require('./routes/eventRoutes');
 const stateRoutes = require('./routes/stateRoutes'); //New states route
+const matchRoutes = require("./routes/matchformroutes");
 
 // Initialize the app
 const app = express();
@@ -17,23 +18,13 @@ app.use(express.json());      // Parse JSON request bodies
 
 // Health check route
 app.get('/', (req, res) => {
-  res.send('Server is running and connected to Azure MySQL.');
-});
-
-// Quick database connectivity test
-app.get('/test-db', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT NOW() AS server_time;');
-    res.json({ connected: true, server_time: rows[0].server_time });
-  } catch (err) {
-    console.error('Database test error:', err);
-    res.status(500).json({ connected: false, error: err.message });
-  }
+  res.send('Server is running and connected to Azure MySQL ');
 });
 
 // Register routes
 app.use('/events', eventRoutes);   // Event CRUD endpoints
 app.use('/states', stateRoutes);   //  New States API
+app.use("/match", matchRoutes); // Routes prefixed with /match
 
 // Optional: Example route to fetch users
 app.get('/users', async (req, res) => {
@@ -45,6 +36,7 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

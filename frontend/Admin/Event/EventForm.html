@@ -3,38 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href = "event.css">
   <title>Event Management Form</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f5f7; margin: 0; padding: 0; }
-    form {
-      width: 60%; margin: 40px auto; background: #fff; padding: 25px;
-      border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label { display: block; margin-top: 10px; font-weight: bold; }
-    input, textarea, select, button {
-      width: 100%; padding: 8px; margin-top: 5px;
-      border: 1px solid #ccc; border-radius: 4px;
-    }
-    button {
-      background: #007bff; color: #fff; cursor: pointer;
-      margin-top: 20px; border: none; padding: 10px;
-    }
-    button:hover { background: #0056b3; }
-    h2 { text-align: center; }
-    #eventsContainer {
-      width: 80%; margin: 40px auto; background: #fff; padding: 20px;
-      border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .event-card {
-      border-bottom: 1px solid #eee; padding: 15px 0;
-    }
-    .event-card:last-child { border-bottom: none; }
-    .event-card h3 { margin: 0 0 5px 0; }
-    .event-card p { margin: 4px 0; color: #333; }
-  </style>
 </head>
 <body>
-  <form id="eventForm">
+  <div id="navbar-placeholder"></div>
+  <form id="eventForm" class = "container">
     <h2>Event Management Form</h2>
 
     <label for="name">Event Name</label>
@@ -71,16 +45,25 @@
     <button type="submit">Submit Event</button>
   </form>
 
-  <div id="eventsContainer">
+  <div id="eventsContainer" class="event-list">
     <h2>Existing Events</h2>
-    <div id="eventsList"></div>
+    <div id="eventsList" class = "eventList"></div>
   </div>
+
+  <script type="module">
+    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
+    loadNavbar();
+  </script>
 
   <script>
     const API_URL = 'http://localhost:3000/events';
     const STATES_URL = 'http://localhost:3000/states';
 
+<<<<<<< HEAD
     // Load states for dropdown
+=======
+    //  Load states for dropdown
+>>>>>>> 573f7327a23dc3e706edc172ff2a2fa6f110871c
     async function loadStates() {
       try {
         const res = await fetch(STATES_URL);
@@ -137,7 +120,11 @@
       }
     });
 
+<<<<<<< HEAD
     //  Load events
+=======
+    // Load events
+>>>>>>> 573f7327a23dc3e706edc172ff2a2fa6f110871c
     async function loadEvents() {
       try {
         const response = await fetch(API_URL);
@@ -172,7 +159,11 @@
       }
     }
 
+<<<<<<< HEAD
     //  Initialize page
+=======
+    // Initialize page
+>>>>>>> 573f7327a23dc3e706edc172ff2a2fa6f110871c
     loadStates();
     loadEvents();
   </script>
