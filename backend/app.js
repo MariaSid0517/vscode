@@ -7,6 +7,7 @@ const db = require('./db');
 //Import routes
 const eventRoutes = require('./routes/eventRoutes');
 const stateRoutes = require('./routes/stateRoutes'); //New states route
+const matchRoutes = require("./routes/matchformroutes");
 
 // Initialize the app
 const app = express();
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 // Register routes
 app.use('/events', eventRoutes);   // Event CRUD endpoints
 app.use('/states', stateRoutes);   //  New States API
+app.use("/match", matchRoutes); // Routes prefixed with /match
 
 // Optional: Example route to fetch users
 app.get('/users', async (req, res) => {
@@ -34,6 +36,7 @@ app.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Database query failed' });
   }
 });
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;
