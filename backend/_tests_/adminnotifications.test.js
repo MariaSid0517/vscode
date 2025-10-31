@@ -1,56 +1,76 @@
-/**
- * @jest-environment jsdom
- */
-const fs = require("fs");
-const path = require("path");
+// _tests_/adminnotifications.test.js
+const db = require("../db");
 
-global.fetch = require("jest-fetch-mock");
+// Mock the DB
+jest.mock("../db", () => ({
+  query: jest.fn(),
+}));
 
-beforeEach(() => {
-  const html = fs.readFileSync(path.resolve("../../frontend/Admin/Notification/Notification.html"), "utf8");
-  document.documentElement.innerHTML = html;
-  fetch.resetMocks();
-});
+const { loadVolunteers, sendNotification } = require("../Admin/notifications");
 
-test("loads volunteers into dropdown", async () => {
-  fetch.mockResponseOnce(JSON.stringify([
-    { id: 1, name: "Maria Siddeeque" },
-    { id: 2, name: "Matthew Reyna" }
-  ]));
+describe("Admin Notifications Module", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-  const { loadVolunteers } = require("../Admin/notifications.js");
-  await loadVolunteers();
+  describe("loadVolunteers", () => {
+    test("should load volunteers successfully", async () => {
+      const mockVolunteers = [
+        { id: 1, first_name: "Alice", last_name: "Smith" },
+        { id: 2, first_name: "Bob", last_name: "Johnson" },
+      ];
+      db.query.mockResolvedValueOnce([mockVolunteers]);
 
-  const options = document.getElementById("volunteer").options;
-  expect(options.length).toBe(3);
-  expect(options[1].textContent).toBe("Maria Siddeeque");
-  expect(options[2].textContent).toBe("Matthew Reyna");
-});
+      const volunteers = await loadVolunteers();
+      expect(volunteers).toHaveLength(2);
+      expect(volunteers[0].first_name).toBe("Alice");
+      expect(db.query).toHaveBeenCalledWith(
+        "SELECT id, first_name, last_name FROM volunteers ORDER BY first_name"
+      );
+    });
 
+    test("should return empty array if DB fails", async () => {
+      db.query.mockRejectedValueOnce(new Error("DB failure"));
 
-test("sends notification to single volunteer", async () => {
-  fetch
-    .mockResolvedValueOnce({ json: async () => [{ id: 1, name: "Maria" }] }) // load volunteers
-    .mockResolvedValueOnce({ json: async () => ({ success: true }) }); // send notification
+      const volunteers = await loadVolunteers();
+      expect(volunteers).toEqual([]);
+    });
+  });
 
-  const { loadVolunteers } = await import("../Admin/notifications.js");
-  await loadVolunteers();
+  describe("sendNotification", () => {
+    test("should send notification to single volunteer", async () => {
+      db.query.mockResolvedValueOnce([{ affectedRows: 1 }]);
 
-  document.getElementById("volunteer").value = "1";
-  document.getElementById("notificationType").value = "Reminder";
-  document.getElementById("message").value = "Test message";
+      const result = await sendNotification({ volunteerId: 1, type: "Info", message: "Hello" });
+      expect(result.success).toBe(true);
+      expect(db.query).toHaveBeenCalledWith(
+        "INSERT INTO notifications (volunteer_id, type, message, date_sent) VALUES (?, ?, ?, ?)",
+        expect.any(Array)
+      );
+    });
 
-  const form = document.getElementById("notificationForm");
-  form.dispatchEvent(new Event("submit"));
+    test("should send notification to all volunteers", async () => {
+      db.query.mockResolvedValueOnce([{ affectedRows: 2 }]);
 
-  await new Promise(process.nextTick); // allow async
+      const result = await sendNotification({ volunteerId: 0, type: "Alert", message: "System Update" });
+      expect(result.success).toBe(true);
+      expect(db.query).toHaveBeenCalledWith(
+        "INSERT INTO notifications (volunteer_id, type, message, date_sent) SELECT id, ?, ?, ? FROM volunteers",
+        expect.any(Array)
+      );
+    });
 
-  expect(fetch).toHaveBeenCalledWith(
-    "/notifications/send",
-    expect.objectContaining({
-      method: "POST",
-      headers: expect.any(Object),
-      body: JSON.stringify({ volunteer_id: 1, type: "Reminder", message: "Test message" })
-    })
-  );
+    test("should fail if type or message is missing", async () => {
+      const result = await sendNotification({ volunteerId: 1, type: "", message: "" });
+      expect(result.success).toBe(false);
+      expect(result.error).toMatch(/Type and message are required/);
+    });
+
+    test("should return error if DB fails", async () => {
+      db.query.mockRejectedValueOnce(new Error("DB failure"));
+      const result = await sendNotification({ volunteerId: 1, type: "Info", message: "Hello" });
+      expect(result.success).toBe(false);
+      expect(result.error).toMatch(/DB failure/);
+    });
+  });
 });

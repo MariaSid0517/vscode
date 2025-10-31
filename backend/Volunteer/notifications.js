@@ -1,34 +1,26 @@
-const container = document.getElementById("notificationsList");
+document.addEventListener("DOMContentLoaded", async () => {
+  const volunteerId = 1; // Replace with logged-in volunteer's ID
+  const container = document.querySelector(".notifications-container");
 
-async function loadNotifications() {
   try {
-    const res = await fetch("/notifications");
+    const res = await fetch(`http://localhost:3000/notifications/volunteer/${volunteerId}`);
     const notifications = await res.json();
 
-    if (!container) return;
-    container.innerHTML = "";
+    if (notifications.length === 0) {
+      container.innerHTML = "<p>No notifications yet.</p>";
+      return;
+    }
+
+    const list = document.createElement("ul");
     notifications.forEach(n => {
-      const div = document.createElement("div");
-      div.className = `notification-card ${n.read ? "" : "unread"}`;
-      div.innerHTML = `
-        <p><strong>${n.type}</strong>: ${n.message}</p>
-        <p>Date: ${n.date_sent}</p>
-        ${!n.read ? '<button class="mark-read-btn">Mark as Read</button>' : ''}
-      `;
-      container.appendChild(div);
-
-      if (!n.read) {
-        div.querySelector(".mark-read-btn").addEventListener("click", async () => {
-          await fetch(`/notifications/read/${n.id}`, { method: "POST" });
-          div.classList.remove("unread");
-          div.querySelector(".mark-read-btn").remove();
-        });
-      }
+      const li = document.createElement("li");
+      li.textContent = `[${n.date_sent}] (${n.type}) ${n.message}`;
+      list.appendChild(li);
     });
-  } catch (err) {
-    if (container) container.innerHTML = "<p>Error loading notifications.</p>";
-    console.error(err);
-  }
-}
 
-document.addEventListener("DOMContentLoaded", loadNotifications);
+    container.appendChild(list);
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = "<p>Error loading notifications.</p>";
+  }
+});

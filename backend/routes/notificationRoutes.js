@@ -1,31 +1,34 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../db");
+const db = require('../db');
 
-// Get all volunteers
-router.get("/volunteers", async (req, res) => {
+// --- Get all volunteers ---
+router.get('/volunteers', async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT profile_id, CONCAT(first_name, ' ', last_name) AS name FROM userprofile"
+      "SELECT profile_id, first_name, last_name FROM userprofile ORDER BY first_name"
     );
     res.json(rows);
   } catch (err) {
-    console.error("Failed to fetch volunteers:", err);
-    res.status(500).json({ error: "Database query failed" });
+    console.error("Error fetching volunteers:", err);
+    res.status(500).json({ error: "Database error" });
   }
 });
 
-// Send a notification
-router.post("/send", async (req, res) => {
-  const { volunteer_id, type, message } = req.body;
+// --- Send notification ---
+router.post('/send', async (req, res) => {
+  let { volunteer_id, type, message } = req.body;
 
-  if (!type || !message || volunteer_id === undefined) {
-    return res.status(400).json({ error: "Missing fields" });
+  // Convert string to number
+  volunteer_id = parseInt(volunteer_id);
+
+  if (!type || !message || isNaN(volunteer_id)) {
+    return res.status(400).json({ error: "All fields are required" });
   }
 
-  const date_sent = new Date().toISOString().split("T")[0];
-
   try {
+    const date_sent = new Date().toISOString().split("T")[0];
+
     if (volunteer_id === 0) {
       // Send to all volunteers
       await db.query(
@@ -34,7 +37,7 @@ router.post("/send", async (req, res) => {
         [type, message, date_sent]
       );
     } else {
-      // Send to a specific volunteer
+      // Send to a single volunteer
       await db.query(
         "INSERT INTO notifications (volunteer_id, type, message, date_sent) VALUES (?, ?, ?, ?)",
         [volunteer_id, type, message, date_sent]
@@ -44,7 +47,7 @@ router.post("/send", async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error("Error sending notification:", err);
-    res.status(500).json({ error: "Failed to send notification" });
+    res.status(500).json({ error: err.message });
   }
 });
 

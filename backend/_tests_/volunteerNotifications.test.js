@@ -1,47 +1,49 @@
-/**
- * @jest-environment jsdom
- */
-const fs = require("fs");
-const path = require("path");
+const db = require("../db");
+const { loadNotifications, markAsRead } = require("../Volunteer/notifications");
 
-global.fetch = require("jest-fetch-mock");
+jest.mock("../db", () => ({
+  query: jest.fn()
+}));
 
-beforeEach(() => {
-  const html = `<div id="notificationsList"></div>`;
-  document.body.innerHTML = html;
+describe("Volunteer Notifications", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-  fetch.resetMocks();
-  fetch.mockResponseOnce(JSON.stringify([
-    { id: 1, type: "Event Assignment", message: "You have been assigned", date_sent: "2025-10-10", read: false },
-    { id: 2, type: "Reminder", message: "Don't forget", date_sent: "2025-10-11", read: false },
-    { id: 3, type: "Schedule Update", message: "New schedule", date_sent: "2025-10-12", read: true }
-  ]));
+  test("loads notifications successfully", async () => {
+    const mockData = [
+      { id: 1, type: "Reminder", message: "Event tomorrow", date_sent: "2025-10-31", is_read: 0 },
+      { id: 2, type: "Update", message: "Schedule changed", date_sent: "2025-10-30", is_read: 1 }
+    ];
+    db.query.mockResolvedValue([mockData]);
 
-  const scriptPath = path.resolve("./Volunteer/notifications.js");
-  const script = fs.readFileSync(scriptPath, "utf8");
-  eval(script);
+    const notifications = await loadNotifications(1);
+    expect(notifications).toEqual(mockData);
+    expect(db.query).toHaveBeenCalledWith(
+      expect.stringContaining("FROM notifications"),
+      [1]
+    );
+  });
 
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-});
+  test("returns empty array on DB error", async () => {
+    db.query.mockRejectedValue(new Error("DB failure"));
+    const notifications = await loadNotifications(1);
+    expect(notifications).toEqual([]);
+  });
 
-test("renders all notifications correctly", () => {
-  const cards = document.querySelectorAll(".notification-card");
-  expect(cards.length).toBe(3);
+  test("markAsRead updates notification successfully", async () => {
+    db.query.mockResolvedValue([{ affectedRows: 1 }]);
+    const result = await markAsRead(1);
+    expect(result).toBe(true);
+    expect(db.query).toHaveBeenCalledWith(
+      expect.stringContaining("UPDATE notifications"),
+      [1]
+    );
+  });
 
-  const unread = document.querySelectorAll(".notification-card.unread");
-  expect(unread.length).toBe(2);
-});
-
-test("unread notifications have 'Mark as Read' button", () => {
-  const btn = document.querySelector(".mark-read-btn");
-  expect(btn).not.toBeNull();
-  expect(btn.textContent).toBe("Mark as Read");
-});
-
-test("clicking mark as read updates the notification", async () => {
-  const btn = document.querySelector(".mark-read-btn");
-  btn.click();
-
-  const unread = document.querySelectorAll(".notification-card.unread");
-  expect(unread.length).toBe(1);
+  test("markAsRead fails on DB error", async () => {
+    db.query.mockRejectedValue(new Error("DB failure"));
+    const result = await markAsRead(1);
+    expect(result).toBe(false);
+  });
 });

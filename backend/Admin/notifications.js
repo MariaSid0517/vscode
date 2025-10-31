@@ -1,55 +1,55 @@
-let volunteers = [];
-const volunteerSelect = document.getElementById("volunteer");
-const form = document.getElementById("notificationForm");
+document.addEventListener("DOMContentLoaded", async () => {
+  const form = document.getElementById("notificationForm");
+  const volunteerSelect = document.getElementById("volunteer");
 
-// Fetch volunteers from backend
-async function loadVolunteers() {
+  // --- Load volunteers into dropdown ---
   try {
-    const res = await fetch("/volunteers");
-    volunteers = await res.json();
-    volunteerSelect.innerHTML = `<option value="0">All Volunteers</option>`;
+    const res = await fetch("http://localhost:3000/notifications/volunteers");
+    if (!res.ok) throw new Error("Failed to fetch volunteers");
+
+    const volunteers = await res.json();
+    volunteerSelect.innerHTML = "<option value='0'>-- All Volunteers --</option>";
     volunteers.forEach(v => {
-      const opt = document.createElement("option");
-      opt.value = v.id;
-      opt.textContent = v.name;
-      volunteerSelect.appendChild(opt);
+      const option = document.createElement("option");
+      option.value = v.profile_id;
+      option.textContent = `${v.first_name} ${v.last_name}`;
+      volunteerSelect.appendChild(option);
     });
   } catch (err) {
     console.error("Error loading volunteers:", err);
-  }
-}
-
-// Send notification
-async function sendNotification(e) {
-  e.preventDefault();
-  const volunteerId = parseInt(volunteerSelect.value);
-  const type = document.getElementById("notificationType").value;
-  const message = document.getElementById("message").value.trim();
-
-  if (!type || !message) {
-    alert("All fields are required.");
-    return;
+    alert("Failed to load volunteers.");
   }
 
-  try {
-    const res = await fetch("/notifications/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ volunteer_id: volunteerId, type, message })
-    });
-    const data = await res.json();
-    alert("Notification sent!");
-    form.reset();
-    volunteerSelect.value = "0";
-  } catch (err) {
-    console.error("Error sending notification:", err);
-    alert("Failed to send notification.");
-  }
-}
+  // --- Handle form submission ---
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadVolunteers();
-  form.addEventListener("submit", sendNotification);
+    const volunteer_id = parseInt(volunteerSelect.value);
+    const type = document.getElementById("notificationType").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!type || !message) {
+      alert("Notification type and message are required.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/notifications/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ volunteer_id, type, message })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Notification sent successfully!");
+        form.reset();
+      } else {
+        alert(data.error || "Failed to send notification.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error sending notification.");
+    }
+  });
 });
-
-export { loadVolunteers, sendNotification };
