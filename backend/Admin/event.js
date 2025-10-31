@@ -1,27 +1,98 @@
+// backend/Admin/event.js
+
+console.log("event.js loaded");
+
+// -----------------------------------------------------------------------------
+// ✅ Validation function (used by Jest tests & real form validation)
+// -----------------------------------------------------------------------------
 function validateEvent(event) {
   const errors = [];
 
-  // Type validations
-  if (event.name && typeof event.name !== "string") errors.push("Event name must be a string.");
-  if (event.description && typeof event.description !== "string") errors.push("Description must be a string.");
-  if (event.location && typeof event.location !== "string") errors.push("Location must be a string.");
-  if (event.date && isNaN(Date.parse(event.date))) errors.push("Event date must be valid.");
+  if (!event || typeof event !== "object") return ["Invalid event object."];
+
+  const name = typeof event.name === "string" ? event.name.trim() : "";
+  const description = typeof event.description === "string" ? event.description.trim() : "";
+  const location = typeof event.location === "string" ? event.location.trim() : "";
+  const date = event.date;
+  const skills = Array.isArray(event.skills) ? event.skills : [];
+  const urgency = typeof event.urgency === "string" ? event.urgency.trim() : "";
 
   // Required fields
-  if (!event.name || event.name.trim() === "") errors.push("Event name is required.");
-  if (!event.description || event.description.trim() === "") errors.push("Description is required.");
-  if (!event.location || event.location.trim() === "") errors.push("Location is required.");
-  if (!event.date || isNaN(Date.parse(event.date))) errors.push("Event date is required or invalid.");
+  if (!name) errors.push("Event name is required.");
+  if (!description) errors.push("Description is required.");
+  if (!location) errors.push("Location is required.");
+  if (!date || isNaN(Date.parse(date))) errors.push("Event date is required or invalid.");
+  if (skills.length === 0) errors.push("At least one skill is required.");
+  if (!urgency) errors.push("Urgency is required.");
 
-  // Optional: numeric checks
-  if (event.max_volunteers && isNaN(event.max_volunteers)) errors.push("Max volunteers must be a number.");
-
-  // Length validations
-  if (event.name && event.name.length > 150) errors.push("Event name cannot exceed 150 characters.");
-  if (event.description && event.description.length > 1000) errors.push("Description cannot exceed 1000 characters.");
-  if (event.location && event.location.length > 255) errors.push("Location cannot exceed 255 characters.");
+  // Length validation
+  if (name.length > 100) errors.push("Event name cannot exceed 100 characters.");
+  if (description.length > 500) errors.push("Description cannot exceed 500 characters.");
+  if (location.length > 200) errors.push("Location cannot exceed 200 characters.");
 
   return errors;
 }
 
-module.exports = { validateEvent };
+// -----------------------------------------------------------------------------
+// 🟢 Real browser functionality (runs only in browser)
+// -----------------------------------------------------------------------------
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("eventForm");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const eventName = document.getElementById("eventName").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const location = document.getElementById("location").value.trim();
+      const date = document.getElementById("date").value;
+      const skills = Array.from(
+        document.querySelectorAll("input[name='skills']:checked")
+      ).map((s) => s.value);
+      const urgency = document.getElementById("urgency").value;
+
+      const validationErrors = validateEvent({
+        name: eventName,
+        description,
+        location,
+        date,
+        skills,
+        urgency,
+      });
+
+      if (validationErrors.length > 0) {
+        alert(validationErrors.join("\n"));
+        return;
+      }
+
+      const eventData = { eventName, description, location, date, skills, urgency };
+
+      try {
+        const res = await fetch("/api/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(eventData),
+        });
+
+        if (res.ok) {
+          alert("Event created successfully!");
+          form.reset();
+        } else {
+          alert("Error creating event.");
+        }
+      } catch (err) {
+        console.error("Error:", err);
+        alert("Failed to create event.");
+      }
+    });
+  });
+}
+
+// -----------------------------------------------------------------------------
+// ✅ Export for Jest and Node backend
+// -----------------------------------------------------------------------------
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { validateEvent };
+}
