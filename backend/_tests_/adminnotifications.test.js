@@ -1,65 +1,56 @@
-const { notifications, validateNotification, addNotification } = require("../Admin/notifications.js");
+/**
+ * @jest-environment jsdom
+ */
+const fs = require("fs");
+const path = require("path");
 
-describe("Admin Notifications", () => {
-  test("initial notifications are displayed", () => {
-    expect(notifications.length).toBe(2);
-  });
+global.fetch = require("jest-fetch-mock");
 
-  test("validation fails if fields are empty", () => {
-    const result = validateNotification({ volunteer: "", type: "", message: "" });
-    expect(result.valid).toBe(false);
-    expect(result.error).toBe("All fields are required.");
-  });
+beforeEach(() => {
+  const html = fs.readFileSync(path.resolve("../../frontend/Admin/Notification/Notification.html"), "utf8");
+  document.documentElement.innerHTML = html;
+  fetch.resetMocks();
+});
 
-  test("validation fails if volunteer name too long", () => {
-    const result = validateNotification({
-      volunteer: "A".repeat(51),
-      type: "Reminder",
-      message: "Test message"
-    });
-    expect(result.valid).toBe(false);
-    expect(result.error).toBe("Volunteer name too long.");
-  });
+test("loads volunteers into dropdown", async () => {
+  fetch.mockResponseOnce(JSON.stringify([
+    { id: 1, name: "Maria Siddeeque" },
+    { id: 2, name: "Matthew Reyna" }
+  ]));
 
-  test("validation fails if type too long", () => {
-    const result = validateNotification({
-      volunteer: "Maria",
-      type: "A".repeat(31),
-      message: "Test message"
-    });
-    expect(result.valid).toBe(false);
-    expect(result.error).toBe("Type too long.");
-  });
+  const { loadVolunteers } = require("../Admin/notifications.js");
+  await loadVolunteers();
 
-  test("validation fails if message too long", () => {
-    const result = validateNotification({
-      volunteer: "Maria",
-      type: "Reminder",
-      message: "A".repeat(501)
-    });
-    expect(result.valid).toBe(false);
-    expect(result.error).toBe("Message too long.");
-  });
+  const options = document.getElementById("volunteer").options;
+  expect(options.length).toBe(3);
+  expect(options[1].textContent).toBe("Maria Siddeeque");
+  expect(options[2].textContent).toBe("Matthew Reyna");
+});
 
-  test("validation passes with correct input", () => {
-    const result = validateNotification({
-      volunteer: "Maria",
-      type: "Reminder",
-      message: "Test message"
-    });
-    expect(result.valid).toBe(true);
-  });
 
-  test("can add a new notification", () => {
-    const result = addNotification({ volunteer: "Matthew", type: "Update", message: "Event moved" });
-    expect(result.valid).toBe(true);
-    expect(notifications.length).toBe(3);
-    expect(notifications[2].volunteer).toBe("Matthew");
-  });
+test("sends notification to single volunteer", async () => {
+  fetch
+    .mockResolvedValueOnce({ json: async () => [{ id: 1, name: "Maria" }] }) // load volunteers
+    .mockResolvedValueOnce({ json: async () => ({ success: true }) }); // send notification
 
-  test("cannot add invalid notification", () => {
-    const result = addNotification({ volunteer: "", type: "", message: "" });
-    expect(result.valid).toBe(false);
-    expect(notifications.length).toBe(3); // unchanged
-  });
+  const { loadVolunteers } = await import("../Admin/notifications.js");
+  await loadVolunteers();
+
+  document.getElementById("volunteer").value = "1";
+  document.getElementById("notificationType").value = "Reminder";
+  document.getElementById("message").value = "Test message";
+
+  const form = document.getElementById("notificationForm");
+  form.dispatchEvent(new Event("submit"));
+
+  await new Promise(process.nextTick); // allow async
+
+  expect(fetch).toHaveBeenCalledWith(
+    "/notifications/send",
+    expect.objectContaining({
+      method: "POST",
+      headers: expect.any(Object),
+      body: JSON.stringify({ volunteer_id: 1, type: "Reminder", message: "Test message" })
+    })
+  );
 });

@@ -8,6 +8,7 @@ const db = require('./db');
 const eventRoutes = require('./routes/eventRoutes');
 const stateRoutes = require('./routes/stateRoutes'); //New states route
 const matchRoutes = require("./routes/matchformroutes");
+const notificationsRoutes = require('./routes/notificationRoutes');
 
 // Initialize the app
 const app = express();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 app.use('/events', eventRoutes);   // Event CRUD endpoints
 app.use('/states', stateRoutes);   //  New States API
 app.use("/match", matchRoutes); // Routes prefixed with /match
+app.use('/notifications', notificationsRoutes);
 
 // Optional: Example route to fetch users
 app.get('/users', async (req, res) => {

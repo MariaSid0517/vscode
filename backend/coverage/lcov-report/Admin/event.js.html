@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">85.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/33</span>
+                <span class='fraction'>23/27</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">89.58% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>65/65</span>
+                <span class='fraction'>43/48</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/18</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -90,8 +90,7 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -99,49 +98,47 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">function validateEvent(event) {
   const errors = [];
 &nbsp;
-  // Field type validations first
+  // Type validations
   if (event.name &amp;&amp; typeof event.name !== "string") errors.push("Event name must be a string.");
   if (event.description &amp;&amp; typeof event.description !== "string") errors.push("Description must be a string.");
   if (event.location &amp;&amp; typeof event.location !== "string") errors.push("Location must be a string.");
-  if (event.skills &amp;&amp; !Array.isArray(event.skills)) errors.push("Skills must be an array.");
-  if (event.urgency &amp;&amp; typeof event.urgency !== "string") errors.push("Urgency must be a string.");
   if (event.date &amp;&amp; isNaN(Date.parse(event.date))) errors.push("Event date must be valid.");
 &nbsp;
-  // Required field validations
-  if (!event.name || (typeof event.name === "string" &amp;&amp; event.name.trim() === "")) errors.push("Event name is required.");
-  if (!event.description || (typeof event.description === "string" &amp;&amp; event.description.trim() === "")) errors.push("Description is required.");
-  if (!event.location || (typeof event.location === "string" &amp;&amp; event.location.trim() === "")) errors.push("Location is required.");
-  if (!event.skills || !Array.isArray(event.skills) || event.skills.length === 0) errors.push("At least one skill is required.");
-  if (!event.urgency || (typeof event.urgency === "string" &amp;&amp; event.urgency.trim() === "")) errors.push("Urgency is required.");
+  // Required fields
+  if (!event.name || event.name.trim() === "") errors.push("Event name is required.");
+  if (!event.description || event.description.trim() === "") errors.push("Description is required.");
+  if (!event.location || event.location.trim() === "") errors.push("Location is required.");
   if (!event.date || isNaN(Date.parse(event.date))) errors.push("Event date is required or invalid.");
 &nbsp;
-  // Field length validations
-  if (typeof event.name === "string" &amp;&amp; event.name.length &gt; 100) errors.push("Event name cannot exceed 100 characters.");
-  if (typeof event.description === "string" &amp;&amp; event.description.length &gt; 500) errors.push("Description cannot exceed 500 characters.");
-  if (typeof event.location === "string" &amp;&amp; event.location.length &gt; 200) errors.push("Location cannot exceed 200 characters.");
+  // Optional: numeric checks
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (event.max_volunteers &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >isNaN(event.max_volunteers))</span> <span class="cstat-no" title="statement not covered" >errors.push("Max volunteers must be a number.");</span>
+&nbsp;
+  // Length validations
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (event.name &amp;&amp; event.name.length &gt; 150) <span class="cstat-no" title="statement not covered" >errors.push("Event name cannot exceed 150 characters.");</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (event.description &amp;&amp; event.description.length &gt; 1000) <span class="cstat-no" title="statement not covered" >errors.push("Description cannot exceed 1000 characters.");</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (event.location &amp;&amp; event.location.length &gt; 255) <span class="cstat-no" title="statement not covered" >errors.push("Location cannot exceed 255 characters.");</span>
 &nbsp;
   return errors;
 }
@@ -154,7 +151,7 @@ module.exports = { validateEvent };
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-18T03:12:38.814Z
+                at 2025-10-31T05:01:39.294Z
             </div>
         <script src="../prettify.js"></script>
         <script>
