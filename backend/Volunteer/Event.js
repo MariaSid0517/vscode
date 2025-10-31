@@ -1,43 +1,38 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const events = [
-    {
-      name: "Community Clean-Up Drive",
-      date: "2025-10-20",
-      time: "9:00 AM - 12:00 PM",
-      location: "Downtown Park",
-      role: "Team Leader",
-      status: "Confirmed"
-    },
-    {
-      name: "Food Bank Distribution",
-      date: "2025-10-25",
-      time: "1:00 PM - 4:00 PM",
-      location: "Houston Food Center",
-      role: "Volunteer",
-      status: "Pending"
-    },
-    {
-      name: "Holiday Toy Drive",
-      date: "2025-12-10",
-      time: "10:00 AM - 2:00 PM",
-      location: "Community Hall",
-      role: "Event Organizer",
-      status: "Completed"
-    }
-  ];
+document.addEventListener("DOMContentLoaded", async () => {
+  const userId = localStorage.getItem("user_id"); // or however you store logged-in user's ID
+  if (!userId) {
+    console.error("No user_id found. Make sure the volunteer is logged in.");
+    return;
+  }
 
   const tbody = document.querySelector("#eventsTable tbody");
+  tbody.innerHTML = "<tr><td colspan='6'>Loading events...</td></tr>";
 
-  events.forEach(event => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${event.name}</td>
-      <td>${event.date}</td>
-      <td>${event.time}</td>
-      <td>${event.location}</td>
-      <td>${event.role}</td>
-      <td class="status-${event.status.toLowerCase()}">${event.status}</td>
-    `;
-    tbody.appendChild(row);
-  });
+  try {
+    const res = await fetch(`http://localhost:3000/match/list?user_id=${userId}`);
+    const matches = await res.json();
+
+    if (matches.length === 0) {
+      tbody.innerHTML = "<tr><td colspan='6'>No matched events found.</td></tr>";
+      return;
+    }
+
+    tbody.innerHTML = "";
+    matches.forEach(match => {
+      const e = match.event;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${e.name}</td>
+        <td>${e.date || "-"}</td>
+        <td>${e.time || "-"}</td>
+        <td>${e.location || "-"}</td>
+        <td>${e.role || "Volunteer"}</td>
+        <td class="status-${(e.status || "Pending").toLowerCase()}">${e.status || "Pending"}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Error loading volunteer events:", err);
+    tbody.innerHTML = "<tr><td colspan='6'>Failed to load events.</td></tr>";
+  }
 });
