@@ -1,30 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login Page</title>
-    <link rel = "stylesheet" href="style.css">
-    <script type="text/javascript" src="../../backend/Login/login.js" defer></script>
+  <meta charset="UTF-8" />
+  <title>Login Page</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="../../backend/Login/login.js" defer></script>
 </head>
 <body>
-    <header>
-        <img src="../logo.png" class="logo">
-    </header>
-    <div class="wrapped">
-        <form id="loginform">
-            <h1>Login</h1>
-            <div class="textBoxdiv">
-                <input type = "email" placeholder = "Email" id="loginemail">
-            </div>
-            <div class="textBoxdiv">
-                <input type = "password" placeholder = "Password" id="loginpassword">
-            </div>
-            <button type = "submit" class="loginbtn">Login</button>
-            <div class="signup">
-                Don't have an account?
-                </br>
-                <a href="registration.html" class="register-link">Click here to sign up</a>
-            </div>
-        </form>
-    </div>
+  <header>
+    <img src="../logo.png" class="logo" alt="Logo" />
+  </header>
+
+  <div class="wrapped">
+    <form id="loginform">
+      <h1>Login</h1>
+
+      <div class="textBoxdiv">
+        <input
+          type="email"
+          placeholder="Email"
+          id="loginemail"
+          required
+        />
+      </div>
+
+      <div class="textBoxdiv">
+        <input
+          type="password"
+          placeholder="Password"
+          id="loginpassword"
+          required
+        />
+      </div>
+
+      <button type="submit" class="loginbtn">Login</button>
+
+      <div class="signup">
+        Don't have an account?
+        <br />
+        <a href="registration.html" class="register-link">Click here to sign up</a>
+      </div>
+    </form>
+  </div>
 </body>
 </html>

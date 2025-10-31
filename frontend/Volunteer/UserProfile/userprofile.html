@@ -4,19 +4,15 @@
   <meta charset="UTF-8" />
   <title>User Profile Page</title>
   <link rel="stylesheet" href="userprofile.css" />
-
-  <!-- App logic: talks to the Express API and handles save/redirect -->
-  <!-- Use a RELATIVE path so Live Server resolves it correctly from this folder -->
   <script defer src="../../../backend/Volunteer/userprofile.js"></script>
 </head>
 <body>
-  <!-- Navbar -->
   <div id="navbar-placeholder"></div>
   <script type="module">
     import { loadNavbar } from "../../../backend/Navbar/navbar.js";
     loadNavbar();
 
-    // Expose addDate globally (onclick handler needs it)
+    // Allow adding more date inputs
     window.addDate = function addDate() {
       const container = document.getElementById("availability-container");
       const input = document.createElement("input");
@@ -88,56 +84,6 @@
           <label for="state">State</label>
           <select id="state" required class="textboxuser">
             <option value="">Select State</option>
-            <option value="AL">AL Alabama</option>
-            <option value="AK">AK Alaska</option>
-            <option value="AZ">AZ Arizona</option>
-            <option value="AR">AR Arkansas</option>
-            <option value="CA">CA California</option>
-            <option value="CO">CO Colorado</option>
-            <option value="CT">CT Connecticut</option>
-            <option value="DE">DE Delaware</option>
-            <option value="FL">FL Florida</option>
-            <option value="GA">GA Georgia</option>
-            <option value="HI">HI Hawaii</option>
-            <option value="ID">ID Idaho</option>
-            <option value="IL">IL Illinois</option>
-            <option value="IN">IN Indiana</option>
-            <option value="IA">IA Iowa</option>
-            <option value="KS">KS Kansas</option>
-            <option value="KY">KY Kentucky</option>
-            <option value="LA">LA Lousiana</option>
-            <option value="ME">ME Maine</option>
-            <option value="MD">MD Maryland</option>
-            <option value="MA">MA Massachusetts</option>
-            <option value="MI">MI Michigan</option>
-            <option value="MN">MN Minnisota</option>
-            <option value="MS">MS Mississippi</option>
-            <option value="MO">MO Missouri</option>
-            <option value="MT">MT Montana</option>
-            <option value="NE">NE Nebraska</option>
-            <option value="NV">NV Nevada</option>
-            <option value="NH">NH New Hampshire</option>
-            <option value="NJ">NJ New Jersey</option>
-            <option value="NM">NM New Mexico</option>
-            <option value="NY">NY New York</option>
-            <option value="NC">NC North Carolina</option>
-            <option value="ND">ND North Dakota</option>
-            <option value="OH">OH Ohio</option>
-            <option value="OK">OK Oklahoma</option>
-            <option value="OR">OR Oregon</option>
-            <option value="PA">PA Pennsylvania</option>
-            <option value="RI">RI Rhode Island</option>
-            <option value="SC">SC South Carolina</option>
-            <option value="SD">SD South Dakota</option>
-            <option value="TN">TN Tennessee</option>
-            <option value="TX">TX Texas</option>
-            <option value="UT">UT Utah</option>
-            <option value="VT">VT Vermont</option>
-            <option value="VA">VA Virginia</option>
-            <option value="WA">WA Washington</option>
-            <option value="WV">WV West Virginia</option>
-            <option value="WI">WI Wisconsin</option>
-            <option value="WY">WY Wyoming</option>
           </select>
         </div>
 
@@ -195,5 +141,21 @@
       </div>
     </form>
   </div>
+
+  <!-- ✅ Load states dynamically from backend -->
+  <script>
+    fetch("http://localhost:3000/states")
+      .then((res) => res.json())
+      .then((states) => {
+        const select = document.getElementById("state");
+        states.forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.state_id; // numeric ID
+          opt.textContent = `${s.state_code} ${s.state_name}`;
+          select.appendChild(opt);
+        });
+      })
+      .catch((err) => console.error("Failed to load states:", err));
+  </script>
 </body>
 </html>
