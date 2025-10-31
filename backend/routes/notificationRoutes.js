@@ -1,53 +1,161 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../db');
+const db = require("../db");
 
-// --- Get all volunteers ---
-router.get('/volunteers', async (req, res) => {
+/* ===========================================================
+   📨 1️⃣ Admin manually creates a notification
+   =========================================================== */
+router.post("/notifications", async (req, res) => {
+  const { volunteer_id, type, message } = req.body;
+
+  if (!volunteer_id || !type || !message) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
+
   try {
-    const [rows] = await db.query(
-      "SELECT profile_id, first_name, last_name FROM userprofile ORDER BY first_name"
+    await db.query(
+      `INSERT INTO notifications (volunteer_id, type, message, date_sent)
+       VALUES (?, ?, ?, CURDATE())`,
+      [volunteer_id, type, message]
     );
-    res.json(rows);
+    res.status(201).json({ message: "Notification created successfully" });
   } catch (err) {
-    console.error("Error fetching volunteers:", err);
-    res.status(500).json({ error: "Database error" });
+    console.error("Error creating notification:", err);
+    res.status(500).json({ error: "Failed to create notification" });
   }
 });
 
-// --- Send notification ---
-router.post('/send', async (req, res) => {
-  let { volunteer_id, type, message } = req.body;
-
-  // Convert string to number
-  volunteer_id = parseInt(volunteer_id);
-
-  if (!type || !message || isNaN(volunteer_id)) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
+/* ===========================================================
+   📬 2️⃣ Volunteer fetches notifications (JSON, API)
+   — now uses user_id instead of volunteer_id
+   =========================================================== */
+router.get("/notifications/:user_id", async (req, res) => {
+  const { user_id } = req.params;
 
   try {
-    const date_sent = new Date().toISOString().split("T")[0];
+    // Find volunteer profile for this user
+    const [[profile]] = await db.query(
+      `SELECT profile_id FROM userprofile WHERE user_id = ?`,
+      [user_id]
+    );
 
-    if (volunteer_id === 0) {
-      // Send to all volunteers
-      await db.query(
-        "INSERT INTO notifications (volunteer_id, type, message, date_sent) " +
-        "SELECT profile_id, ?, ?, ? FROM userprofile",
-        [type, message, date_sent]
-      );
-    } else {
-      // Send to a single volunteer
-      await db.query(
-        "INSERT INTO notifications (volunteer_id, type, message, date_sent) VALUES (?, ?, ?, ?)",
-        [volunteer_id, type, message, date_sent]
-      );
+    if (!profile) {
+      return res.status(404).json({ error: "User profile not found." });
     }
 
-    res.json({ success: true });
+    // Fetch notifications linked to that volunteer profile
+    const [rows] = await db.query(
+      `SELECT type, message, date_sent
+       FROM notifications
+       WHERE volunteer_id = ?
+       ORDER BY date_sent DESC`,
+      [profile.profile_id]
+    );
+
+    res.json(rows);
   } catch (err) {
-    console.error("Error sending notification:", err);
-    res.status(500).json({ error: err.message });
+    console.error("Error fetching notifications:", err);
+    res.status(500).json({ error: "Failed to fetch notifications" });
+  }
+});
+
+/* ===========================================================
+   🧾 3️⃣ Volunteer-friendly view (HTML page)
+   — now uses user_id instead of volunteer_id
+   =========================================================== */
+router.get("/notifications/view/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    // Find the volunteer profile linked to this user_id
+    const [[profile]] = await db.query(
+      `SELECT profile_id FROM userprofile WHERE user_id = ?`,
+      [user_id]
+    );
+
+    if (!profile) {
+      return res.status(404).send("<h3>User profile not found.</h3>");
+    }
+
+    // Fetch notifications for this volunteer
+    const [rows] = await db.query(
+      `SELECT type, message, date_sent
+       FROM notifications
+       WHERE volunteer_id = ?
+       ORDER BY date_sent DESC`,
+      [profile.profile_id]
+    );
+
+    // Build HTML response
+    let html = `
+      <html>
+      <head>
+        <title>My Notifications</title>
+        <link rel="stylesheet" href="/frontend/Volunteer/Notification/Notifications.css">
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f8fc;
+          }
+          .container {
+            width: 80%;
+            margin: 40px auto;
+            background: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+          }
+          h1 {
+            text-align: center;
+            color: #003366;
+          }
+          .notifications-list {
+            list-style-type: none;
+            padding: 0;
+          }
+          .notifications-list li {
+            background: #eaf7ff;
+            border-left: 5px solid #008cba;
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-radius: 5px;
+          }
+          .notifications-list li small {
+            color: #555;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>My Notifications</h1>
+          <ul class="notifications-list">
+    `;
+
+    if (rows.length === 0) {
+      html += `<li>No notifications yet.</li>`;
+    } else {
+      for (const note of rows) {
+        html += `
+          <li>
+            <strong>${note.type}</strong><br>
+            ${note.message}<br>
+            <small>${new Date(note.date_sent).toLocaleDateString()}</small>
+          </li>
+        `;
+      }
+    }
+
+    html += `
+          </ul>
+        </div>
+      </body>
+      </html>
+    `;
+
+    res.send(html);
+  } catch (err) {
+    console.error("Error displaying notifications:", err);
+    res.status(500).send("Error displaying notifications.");
   }
 });
 

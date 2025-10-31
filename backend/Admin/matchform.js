@@ -1,6 +1,8 @@
 let volunteers = [];
 let events = [];
-let matches = []; // Local display of matches
+let matches = [];
+
+const API = "http://localhost:3000/match";
 
 function initMatchForm() {
   const volunteerSelect = document.getElementById("volunteerSelect");
@@ -13,8 +15,7 @@ function initMatchForm() {
     return;
   }
 
-  // --- Fetch volunteers ---
-  fetch("http://localhost:3000/match/volunteers")
+  fetch(`${API}/volunteers`)
     .then(res => res.json())
     .then(data => {
       volunteers = data;
@@ -28,8 +29,7 @@ function initMatchForm() {
     })
     .catch(err => console.error("Error loading volunteers:", err));
 
-  // --- Fetch events ---
-  fetch("http://localhost:3000/match/events")
+  fetch(`${API}/events`)
     .then(res => res.json())
     .then(data => {
       events = data;
@@ -43,8 +43,7 @@ function initMatchForm() {
     })
     .catch(err => console.error("Error loading events:", err));
 
-  // --- Fetch existing matches ---
-  fetch("http://localhost:3000/match/list")
+  fetch(`${API}/list`)
     .then(res => res.json())
     .then(data => {
       matches = data;
@@ -52,12 +51,11 @@ function initMatchForm() {
     })
     .catch(err => console.error("Error loading existing matches:", err));
 
-  // --- Handle form submit ---
   matchingForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const volunteerId = parseInt(volunteerSelect.value);
-    const eventId = parseInt(eventSelect.value);
+    const volunteerId = parseInt(volunteerSelect.value, 10);
+    const eventId = parseInt(eventSelect.value, 10);
 
     if (!volunteerId || !eventId) {
       alert("Please select both a volunteer and an event.");
@@ -66,44 +64,43 @@ function initMatchForm() {
 
     const volunteer = volunteers.find(v => v.id === volunteerId);
     const event = events.find(ev => ev.id === eventId);
-
     if (!volunteer || !event) {
       alert("Invalid volunteer or event selection.");
       return;
     }
 
-    // Skill match check
-    const missingSkills = event.required_skills.filter(skill => !volunteer.skills.includes(skill));
+    const missingSkills = (event.required_skills || []).filter(
+      s => !(volunteer.skills || []).includes(s)
+    );
     if (missingSkills.length > 0) {
-      const proceed = confirm(
+      const go = confirm(
         `Volunteer is missing required skills: ${missingSkills.join(", ")}.\nProceed anyway?`
       );
-      if (!proceed) return;
+      if (!go) return;
     }
 
-    // Send match to backend
-    fetch("/match/assign", {
+    fetch(`${API}/assign`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ volunteer_id: volunteerId, event_id: eventId })
     })
-    .then(res => res.text())
-    .then(response => {
-      if (response.includes("already")) {
-        alert("This volunteer is already matched to this event.");
-        return;
-      }
-
-      // Add locally to display
-      matches.push({ volunteer, event });
-      updateMatchList();
-      matchingForm.reset();
-      volunteerSelect.focus();
-    })
-    .catch(err => console.error("Error assigning match:", err));
+      .then(async res => {
+        const text = await res.text();
+        if (!res.ok) throw new Error(text);
+        return text;
+      })
+      .then(() => {
+        matches.unshift({ volunteer, event });
+        updateMatchList();
+        matchingForm.reset();
+        volunteerSelect.focus();
+      })
+      .catch(err => {
+        alert(err.message || "Error assigning match");
+        console.error("Error assigning match:", err);
+      });
   });
 
-  // --- Function to display matches ---
   function updateMatchList() {
     matchList.innerHTML = "";
     if (matches.length === 0) {

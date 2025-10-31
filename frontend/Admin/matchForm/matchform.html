@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Volunteer Matching | Admin</title>
-  <link rel="stylesheet" href="matchform.css">
+  <link rel="stylesheet" href="matchform.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-  <!-- Navbar placeholder -->
+  <!-- ✅ Navbar placeholder restored -->
   <div id="navbar-placeholder"></div>
 
   <section class="match-container">
@@ -31,13 +32,129 @@
     <ul id="matchList"></ul>
   </section>
 
-  <!-- Load Navbar -->
+  <!-- ✅ Navbar loader added back (exact as before) -->
   <script type="module">
-    import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";
-    loadNavbar();
+    try {
+      const mod = await import("../../../backend/Navbar/loadNavbar.js");
+      mod.loadNavbar?.();
+    } catch (e) {
+      console.warn("Navbar module not found/loaded; continuing…");
+    }
   </script>
 
-  <!-- Matching Logic -->
-  <script type="text/javascript" src="../../../backend/Admin/matchform.js" defer></script>
+  <script>
+    (function () {
+      const API = "http://localhost:3000/match"; // backend now on port 3000
+      let volunteers = [], events = [], matches = [];
+
+      function byId(id) { return document.getElementById(id); }
+
+      function updateMatchList() {
+        const matchList = byId("matchList");
+        matchList.innerHTML = "";
+        if (matches.length === 0) {
+          matchList.innerHTML = "<li>No matches yet.</li>";
+          return;
+        }
+        matches.forEach(m => {
+          const li = document.createElement("li");
+          li.textContent = `${m.volunteer.name} → ${m.event.name}`;
+          matchList.appendChild(li);
+        });
+      }
+
+      async function init() {
+        const volunteerSelect = byId("volunteerSelect");
+        const eventSelect = byId("eventSelect");
+        const matchingForm = byId("matchingForm");
+
+        // Volunteers
+        try {
+          const res = await fetch(`${API}/volunteers`);
+          const data = await res.json();
+          volunteers = data;
+          volunteerSelect.innerHTML = "<option value=''>-- Select Volunteer --</option>";
+          for (const v of volunteers) {
+            const o = document.createElement("option");
+            o.value = v.id;
+            o.textContent = v.name;
+            volunteerSelect.appendChild(o);
+          }
+        } catch (e) {
+          console.error("Failed to load volunteers:", e);
+          alert("Failed to load volunteers. Check server/CORS.");
+        }
+
+        // Events
+        try {
+          const res = await fetch(`${API}/events`);
+          const data = await res.json();
+          events = data;
+          eventSelect.innerHTML = "<option value=''>-- Select Event --</option>";
+          for (const ev of events) {
+            const o = document.createElement("option");
+            o.value = ev.id;
+            o.textContent = ev.name;
+            eventSelect.appendChild(o);
+          }
+        } catch (e) {
+          console.error("Failed to load events:", e);
+          alert("Failed to load events. Check server/CORS.");
+        }
+
+        // Existing matches
+        try {
+          const res = await fetch(`${API}/list`);
+          matches = await res.json();
+          updateMatchList();
+        } catch (e) {
+          console.warn("No existing matches yet or failed to load.");
+        }
+
+        // Submit
+        matchingForm.addEventListener("submit", async (evt) => {
+          evt.preventDefault();
+          const volunteerId = parseInt(volunteerSelect.value, 10);
+          const eventId = parseInt(eventSelect.value, 10);
+          if (!volunteerId || !eventId) {
+            alert("Please select both a volunteer and an event.");
+            return;
+          }
+
+          const volunteer = volunteers.find(v => v.id === volunteerId);
+          const event = events.find(ev => ev.id === eventId);
+          if (!volunteer || !event) {
+            alert("Invalid selection.");
+            return;
+          }
+
+          const missing = (event.required_skills || []).filter(
+            s => !(volunteer.skills || []).includes(s)
+          );
+          if (missing.length > 0 && !confirm(
+              `Volunteer missing: ${missing.join(", ")}. Proceed?`)) return;
+
+          try {
+            const res = await fetch(`${API}/assign`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ volunteer_id: volunteerId, event_id: eventId })
+            });
+            const text = await res.text();
+            if (!res.ok) throw new Error(text);
+            matches.unshift({ volunteer, event });
+            updateMatchList();
+            matchingForm.reset();
+            volunteerSelect.focus();
+          } catch (e) {
+            alert(e.message || "Error assigning match");
+            console.error(e);
+          }
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", init);
+    })();
+  </script>
 </body>
 </html>

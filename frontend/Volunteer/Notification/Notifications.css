@@ -81,3 +81,25 @@ h1 {
     text-decoration: none;
     box-sizing: border-box;
 }
+
+/* Urgency levels */
+.urgent-high {
+  border-left-color: #e63946;
+  background-color: #fff5f5;
+}
+
+.urgent-medium {
+  border-left-color: #ffb703;
+  background-color: #fff9e6;
+}
+
+.urgent-low {
+  border-left-color: #2a9d8f;
+  background-color: #f2fff8;
+}
+
+.notification-urgency {
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: #495057;
+}

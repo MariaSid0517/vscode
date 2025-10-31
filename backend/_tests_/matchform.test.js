@@ -2,71 +2,84 @@
  * @jest-environment jsdom
  */
 
-require('jest-fetch-mock').enableMocks();
-require("../Admin/matchform"); // <-- adjust path
+const fs = require("fs");
+const path = require("path");
 
-describe("Match Form Initialization", () => {
-  let volunteerSelect, eventSelect, matchList, matchingForm;
+let initMatchForm, volunteers, events, matches;
 
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <form id="matchingForm">
-        <select id="volunteerSelect"></select>
-        <select id="eventSelect"></select>
-      </form>
-      <ul id="matchList"></ul>
-    `;
+beforeEach(() => {
+  // Load HTML template
+  const html = fs.readFileSync(path.resolve(__dirname, "../../frontend/Admin/matchForm/matchform.html"), "utf8");
+  document.documentElement.innerHTML = html;
 
-    volunteerSelect = document.getElementById("volunteerSelect");
-    eventSelect = document.getElementById("eventSelect");
-    matchList = document.getElementById("matchList");
-    matchingForm = document.getElementById("matchingForm");
+  // Mock alert and confirm
+  global.alert = jest.fn();
+  global.confirm = jest.fn(() => true); // Always "yes"
 
-    fetch.resetMocks();
-  });
+  // Load script
+  ({ initMatchForm, volunteers, events, matches } = require("../Admin/matchform.js"));
 
-  test("loads volunteers into dropdown", async () => {
-    fetch.mockResponses(
-      [JSON.stringify([{ id: 1, name: "Maria", skills: ["cpr"] }]), { status: 200 }],
-      [JSON.stringify([]), { status: 200 }],
-      [JSON.stringify([]), { status: 200 }]
-    );
+  // Initialize
+  initMatchForm();
+});
 
-      document.dispatchEvent(new Event("DOMContentLoaded"));
+afterEach(() => {
+  jest.resetModules();
+  jest.clearAllMocks();
+});
 
-      // Let async fetches complete
-      await new Promise(resolve => setTimeout(resolve, 0));
+test("creates a match when volunteer and event are selected", () => {
+  const volunteerSelect = document.getElementById("volunteerSelect");
+  const eventSelect = document.getElementById("eventSelect");
+  const matchingForm = document.getElementById("matchingForm");
+  const matchList = document.getElementById("matchList");
 
-      expect(volunteerSelect.options.length).toBe(2);
-      expect(volunteerSelect.options[1].textContent).toBe("Maria");
-  });
+  volunteerSelect.value = "1";
+  eventSelect.value = "1";
 
-  test("loads events into dropdown", async () => {
-    fetch.mockResponses(
-      [JSON.stringify([]), { status: 200 }],
-      [JSON.stringify([{ id: 10, name: "Food Drive", required_skills: [] }]), { status: 200 }],
-      [JSON.stringify([]), { status: 200 }]
-    );
+  matchingForm.dispatchEvent(new Event("submit"));
 
-    document.dispatchEvent(new Event("DOMContentLoaded"));
-    await new Promise(resolve => setTimeout(resolve, 0));
+  expect(matchList.innerHTML).toContain("Maria Siddeeque → Mental Health Outreach");
+});
 
+test("alerts if volunteer or event not selected", () => {
+  const volunteerSelect = document.getElementById("volunteerSelect");
+  const eventSelect = document.getElementById("eventSelect");
+  const matchingForm = document.getElementById("matchingForm");
 
-    expect(eventSelect.options.length).toBe(2);
-    expect(eventSelect.options[1].textContent).toBe("Food Drive");
-  });
+  volunteerSelect.value = "";
+  eventSelect.value = "1";
 
-  test("loads matches list", async () => {
-    fetch.mockResponses(
-      [JSON.stringify([]), { status: 200 }],
-      [JSON.stringify([]), { status: 200 }],
-      [JSON.stringify([{ volunteer: { name: "John" }, event: { name: "Cleanup" }}]), { status: 200 }]
-    );
+  matchingForm.dispatchEvent(new Event("submit"));
 
-    document.dispatchEvent(new Event("DOMContentLoaded"));
-    await new Promise(resolve => setTimeout(resolve, 0));
+  expect(global.alert).toHaveBeenCalledWith("Please select both a volunteer and an event.");
+});
 
+test("prevents duplicate matches", () => {
+  const volunteerSelect = document.getElementById("volunteerSelect");
+  const eventSelect = document.getElementById("eventSelect");
+  const matchingForm = document.getElementById("matchingForm");
 
-    expect(matchList.textContent).toContain("John → Cleanup");
-  });
+  volunteerSelect.value = "1";
+  eventSelect.value = "1";
+
+  matchingForm.dispatchEvent(new Event("submit"));
+  matchingForm.dispatchEvent(new Event("submit")); // duplicate
+
+  expect(global.alert).toHaveBeenCalledWith("This volunteer is already matched to that event!");
+});
+
+test("warns if volunteer lacks required skills", () => {
+  const volunteerSelect = document.getElementById("volunteerSelect");
+  const eventSelect = document.getElementById("eventSelect");
+  const matchingForm = document.getElementById("matchingForm");
+
+  volunteerSelect.value = "2"; // Matthew lacks Public Speaking
+  eventSelect.value = "1"; // Event requires Public Speaking
+
+  matchingForm.dispatchEvent(new Event("submit"));
+
+  expect(global.confirm).toHaveBeenCalledWith(
+    "Warning: This volunteer is missing the following required skills for this event: Public Speaking. Do you still want to match them?"
+  );
 });

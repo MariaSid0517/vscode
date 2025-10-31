@@ -1,46 +1,47 @@
+
 /**
  * @jest-environment jsdom
  */
+/*
 const fs = require("fs");
 const path = require("path");
 const { JSDOM, VirtualConsole } = require("jsdom");
 
 describe("Volunteer User Profile", () => {
-  let window, document, form, alertMock, fetchMock;
+  let window, document, form, alertMock;
 
   const jsPath = path.resolve(__dirname, "../Volunteer/userprofile.js");
   const jsCode = fs.readFileSync(jsPath, "utf8");
 
+  // Minimal mock HTML used for tests — avoids external fetches
   const html = `
     <!DOCTYPE html>
     <html>
-      <body>
-        <form id="profileForm">
-          <input id="fullName" />
-          <input id="address1" />
-          <input id="address2" />
-          <input id="city" />
-          <select id="state">
-            <option value="">--</option>
-            <option value="TX">TX</option>
-          </select>
-          <input id="zip" />
-          <textarea id="preferences"></textarea>
-          <select id="skills" multiple>
-            <option value="teaching">Teaching</option>
-            <option value="cooking">Cooking</option>
-          </select>
-          <button type="submit">Save</button>
-        </form>
-      </body>
+    <body>
+      <form id="profileForm">
+        <input id="fullName" />
+        <input id="address1" />
+        <input id="address2" />
+        <input id="city" />
+        <select id="state">
+          <option value="">--</option>
+          <option value="TX">TX</option>
+        </select>
+        <input id="zip" />
+        <textarea id="preferences"></textarea>
+        <select id="skills" multiple>
+          <option value="teaching">Teaching</option>
+          <option value="cooking">Cooking</option>
+        </select>
+        <button type="submit">Save</button>
+      </form>
+    </body>
     </html>
   `;
 
-  const normalize = (msg) => String(msg).toLowerCase();
-
-  function setupDOM() {
+  function setupDOM(preloadProfile = null) {
     const virtualConsole = new VirtualConsole();
-    virtualConsole.on("error", () => {}); // silence jsdom errors
+    virtualConsole.on("error", () => {}); // suppress jsdom fetch/nav errors
 
     const dom = new JSDOM(html, {
       url: "https://example.org/",
@@ -51,116 +52,58 @@ describe("Volunteer User Profile", () => {
 
     window = dom.window;
     document = window.document;
-    form = document.getElementById("profileForm");
+
+    //  Mark this as a JSDOM test instance so app code skips real redirects
     window.__JSDOM_TEST__ = true;
 
-    // Route alerts; spy on global.alert so either window.alert/global.alert get intercepted
-    global.alert = window.alert.bind(window);
-    alertMock = jest.spyOn(global, "alert").mockImplementation(() => {});
+    //  Mock alert BEFORE running script
+    alertMock = jest.fn();
+    window.alert = alertMock;
 
-    // ---- Optional redirect spying helpers (not asserted in this test) ----
-    Object.defineProperty(window, "__redirect", {
-      configurable: true,
-      writable: true,
-      value: jest.fn(),
-    });
-    try {
-      Object.defineProperty(window.location, "assign", {
-        configurable: true,
-        writable: true,
-        value: (url) => window.__redirect(url, "assign"),
-      });
-    } catch {}
-    try {
-      Object.defineProperty(window.location, "replace", {
-        configurable: true,
-        writable: true,
-        value: (url) => window.__redirect(url, "replace"),
-      });
-    } catch {}
-
-    // Mock localStorage
-    const store = { user_id: "1" };
+    //  Mock localStorage
+    const store = {};
     Object.defineProperty(window, "localStorage", {
       value: {
-        getItem: (k) => (k in store ? store[k] : null),
-        setItem: (k, v) => (store[k] = String(v)),
+        getItem: (k) => store[k] || null,
+        setItem: (k, v) => {
+          store[k] = String(v);
+        },
         removeItem: (k) => delete store[k],
         clear: () => Object.keys(store).forEach((k) => delete store[k]),
       },
       configurable: true,
     });
 
-    // Mock fetch
-    fetchMock = jest.fn((url, opts = {}) => {
-      if (typeof url === "string" && url.includes("/profiles/1") && (!opts.method || opts.method === "GET")) {
-        return Promise.resolve({
-          ok: true,
-          json: async () => ({
-            first_name: "John",
-            last_name: "Doe",
-            address: "123 Main St",
-            city: "Austin",
-            state_id: "TX",
-            zipcode: "73301",
-            preferences: "Teaching",
-            skills: "teaching,cooking",
-          }),
-        });
-      }
-      if (opts && opts.method === "PUT") {
-        return Promise.resolve({
-          ok: true,
-          json: async () => ({ success: true }),
-        });
-      }
-      return Promise.reject(new Error("Unexpected fetch URL"));
-    });
+    //  Preload profile if requested
+    if (preloadProfile) {
+      window.localStorage.setItem("volunteerProfile", JSON.stringify(preloadProfile));
+    }
 
-    window.fetch = fetchMock;
-    global.fetch = fetchMock;
-
-    // Inject the userprofile.js AFTER mocks
-    const runScript = new Function("window", `const document = window.document;\n${jsCode}`);
+    //  Run the script inside this DOM
+    const runScript = new Function("window", `
+      const document = window.document;
+      ${jsCode}
+      document.dispatchEvent(new window.Event("DOMContentLoaded"));
+    `);
     runScript(window);
 
-    // Fire DOMContentLoaded to initialize
-    document.dispatchEvent(new window.Event("DOMContentLoaded"));
-
-    return { document, window, fetchMock };
+    form = document.getElementById("profileForm");
+    return { document, window };
   }
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
-  // ✅ Test 1: Validation of required fields
-  test("shows alert if required fields are missing", async () => {
+  test("shows alert if required fields are missing", () => {
     setupDOM();
-    await new Promise((r) => setTimeout(r, 30));
-
-    // Clear all required fields
-    document.getElementById("fullName").value = "";
-    document.getElementById("address1").value = "";
-    document.getElementById("city").value = "";
-    document.getElementById("state").value = "";
-    document.getElementById("zip").value = "";
-
     form.dispatchEvent(new window.Event("submit", { bubbles: true }));
-    await new Promise((r) => setTimeout(r, 40));
-
-    expect(alertMock).toHaveBeenCalled();
-
-    const msgs = alertMock.mock.calls.map(([m]) => normalize(m));
-    const hasRequiredWarning = msgs.some((m) => m.includes("required") && m.includes("fill"));
-    expect(hasRequiredWarning).toBe(true);
+    expect(alertMock).toHaveBeenCalledTimes(1);
+    expect(alertMock).toHaveBeenCalledWith("Please fill in all required fields.");
   });
 
-  // ✅ Test 2: Save profile and show success (redirect optional at runtime)
-  test("saves profile and shows success message", async () => {
+  test("saves profile and performs redirect (captured in test env)", () => {
     setupDOM();
-    await new Promise((r) => setTimeout(r, 30));
-
     document.getElementById("fullName").value = "Jane Doe";
     document.getElementById("address1").value = "123 Main St";
     document.getElementById("city").value = "Houston";
@@ -169,27 +112,164 @@ describe("Volunteer User Profile", () => {
     document.getElementById("skills").options[0].selected = true;
 
     form.dispatchEvent(new window.Event("submit", { bubbles: true }));
-    await new Promise((r) => setTimeout(r, 60)); // allow async
 
-    const msgs = alertMock.mock.calls.map(([m]) => normalize(m));
+    const saved = JSON.parse(window.localStorage.getItem("volunteerProfile"));
+    expect(saved).not.toBeNull();
+    expect(saved.name).toBe("Jane Doe");
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining("/profiles/1"),
-      expect.objectContaining({ method: "PUT" })
-    );
-
-    const hasSuccess = msgs.some((m) => m.includes("success"));
-    expect(hasSuccess).toBe(true);
+    //  In test mode, the app writes the redirect URL here:
+    expect(window.__lastNavigatedTo).toBe("volunteerdash.html");
   });
 
-  // ✅ Test 3: Load profile from GET
-  test("loads existing profile data correctly", async () => {
-    setupDOM();
-    await new Promise((r) => setTimeout(r, 30));
-
+  test("loads existing profile data correctly", () => {
+    const mockProfile = {
+      name: "John Doe",
+      address1: "100 Test Ave",
+      city: "Austin",
+      state: "TX",
+      zip: "73301",
+      skills: ["teaching"],
+    };
+    const { document } = setupDOM(mockProfile);
     expect(document.getElementById("fullName").value).toBe("John Doe");
     expect(document.getElementById("city").value).toBe("Austin");
     expect(document.getElementById("state").value).toBe("TX");
-    expect(document.getElementById("address1").value).toBe("123 Main St");
+  });
+});
+*/
+/**
+ * @jest-environment jsdom
+ */
+const fs = require("fs");
+const path = require("path");
+const { JSDOM, VirtualConsole } = require("jsdom");
+
+describe("Volunteer User Profile", () => {
+  let window, document, form, alertMock;
+
+  const jsPath = path.resolve(__dirname, "../Volunteer/userprofile.js");
+  const jsCode = fs.readFileSync(jsPath, "utf8");
+
+  // Minimal mock HTML used for tests — avoids external fetches
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <body>
+      <form id="profileForm">
+        <input id="fullName" />
+        <input id="address1" />
+        <input id="address2" />
+        <input id="city" />
+        <select id="state">
+          <option value="">--</option>
+          <option value="TX">TX</option>
+        </select>
+        <input id="zip" />
+        <textarea id="preferences"></textarea>
+        <select id="skills" multiple>
+          <option value="teaching">Teaching</option>
+          <option value="cooking">Cooking</option>
+        </select>
+        <button type="submit">Save</button>
+      </form>
+    </body>
+    </html>
+  `;
+
+  function setupDOM(preloadProfile = null) {
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.on("error", () => {}); // suppress jsdom fetch/nav errors
+
+    const dom = new JSDOM(html, {
+      url: "https://example.org/",
+      runScripts: "dangerously",
+      resources: "usable",
+      virtualConsole,
+    });
+
+    window = dom.window;
+    document = window.document;
+
+    //  Mark this as a JSDOM test instance so app code skips real redirects
+    window.__JSDOM_TEST__ = true;
+
+    //  Mock alert BEFORE running script
+    alertMock = jest.fn();
+    window.alert = alertMock;
+
+    //  Mock localStorage
+    const store = {};
+    Object.defineProperty(window, "localStorage", {
+      value: {
+        getItem: (k) => store[k] || null,
+        setItem: (k, v) => {
+          store[k] = String(v);
+        },
+        removeItem: (k) => delete store[k],
+        clear: () => Object.keys(store).forEach((k) => delete store[k]),
+      },
+      configurable: true,
+    });
+
+    //  Preload profile if requested
+    if (preloadProfile) {
+      window.localStorage.setItem("volunteerProfile", JSON.stringify(preloadProfile));
+    }
+
+    //  Run the script inside this DOM
+    const runScript = new Function("window", `
+      const document = window.document;
+      ${jsCode}
+      document.dispatchEvent(new window.Event("DOMContentLoaded"));
+    `);
+    runScript(window);
+
+    form = document.getElementById("profileForm");
+    return { document, window };
+  }
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("shows alert if required fields are missing", () => {
+    setupDOM();
+    form.dispatchEvent(new window.Event("submit", { bubbles: true }));
+    expect(alertMock).toHaveBeenCalledTimes(1);
+    expect(alertMock).toHaveBeenCalledWith("Please fill in all required fields.");
+  });
+
+  test("saves profile and performs redirect (captured in test env)", () => {
+    setupDOM();
+    document.getElementById("fullName").value = "Jane Doe";
+    document.getElementById("address1").value = "123 Main St";
+    document.getElementById("city").value = "Houston";
+    document.getElementById("state").value = "TX";
+    document.getElementById("zip").value = "77001";
+    document.getElementById("skills").options[0].selected = true;
+
+    form.dispatchEvent(new window.Event("submit", { bubbles: true }));
+
+    const saved = JSON.parse(window.localStorage.getItem("volunteerProfile"));
+    expect(saved).not.toBeNull();
+    expect(saved.name).toBe("Jane Doe");
+
+    // Updated expectation to match the app's new redirect target
+    expect(window.__lastNavigatedTo).toBe("../VolunteerDashboard/Volunteerdashboard.html");
+  });
+
+  test("loads existing profile data correctly", () => {
+    const mockProfile = {
+      name: "John Doe",
+      address1: "100 Test Ave",
+      city: "Austin",
+      state: "TX",
+      zip: "73301",
+      skills: ["teaching"],
+    };
+    const { document } = setupDOM(mockProfile);
+    expect(document.getElementById("fullName").value).toBe("John Doe");
+    expect(document.getElementById("city").value).toBe("Austin");
+    expect(document.getElementById("state").value).toBe("TX");
   });
 });

@@ -1,10 +1,11 @@
-*{
-    font-family:"Times New Roman",Cambria,Georgia, Times, serif;
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    box-sizing: border-box;
+* {
+  font-family: "Times New Roman", Cambria, Georgia, Times, serif;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
 }
+
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   background-color: #f4f4f9;
@@ -18,7 +19,7 @@ body {
   background: white;
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -37,7 +38,8 @@ thead {
   color: white;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: center;
   border-bottom: 1px solid #ddd;
@@ -47,6 +49,7 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
+/* Status colors */
 .status-confirmed {
   color: green;
   font-weight: bold;
@@ -60,4 +63,27 @@ tr:hover {
 .status-completed {
   color: #219ebc;
   font-weight: bold;
+}
+
+/* Mark Completed Button */
+.complete-btn {
+  background-color: #0a9396;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.complete-btn:hover {
+  background-color: #007f83;
+  transform: scale(1.05);
+}
+
+.complete-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
 }

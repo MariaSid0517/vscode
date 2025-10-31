@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>13/13</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>17/17</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -97,109 +97,82 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const db = require("../db");
-&nbsp;
-// Load all volunteers for dropdown
-async function loadVolunteers() {
-  try {
-    const [rows] = await db.query("SELECT id, first_name, last_name FROM volunteers ORDER BY first_name");
-    return rows;
-  } catch (err) {
-    console.error("Error loading volunteers:", err);
-    return [];
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">let notifications = [
+  {
+    volunteer: "Maria Siddeeque",
+    type: "Event Assignment",
+    message: "You have been assigned to the Mental Health Outreach event.",
+    date: "2025-10-10"
+  },
+  {
+    volunteer: "Matthew Reyna",
+    type: "Reminder",
+    message: "Don't forget the Health Clinic event tomorrow at 9 AM!",
+    date: "2025-10-11"
   }
+];
+&nbsp;
+// Validation function
+function validateNotification({ volunteer, type, message }) {
+  if (!volunteer || !type || !message) return { valid: false, error: "All fields are required." };
+  if (volunteer.length &gt; 50) return { valid: false, error: "Volunteer name too long." };
+  if (type.length &gt; 30) return { valid: false, error: "Type too long." };
+  if (message.length &gt; 500) return { valid: false, error: "Message too long." };
+  return { valid: true };
 }
 &nbsp;
-// Send a notification
-async function sendNotification({ volunteerId, type, message }) {
-  if (!type || !message) {
-    return { success: false, error: "Type and message are required" };
-  }
-&nbsp;
-  try {
-    const date_sent = new Date().toISOString().split("T")[0];
-&nbsp;
-    if (volunteerId === 0) {
-      // Send to all volunteers
-      await db.query(
-        "INSERT INTO notifications (volunteer_id, type, message, date_sent) SELECT id, ?, ?, ? FROM volunteers",
-        [type, message, date_sent]
-      );
-    } else {
-      await db.query(
-        "INSERT INTO notifications (volunteer_id, type, message, date_sent) VALUES (?, ?, ?, ?)",
-        [volunteerId, type, message, date_sent]
-      );
-    }
-&nbsp;
-    return { success: true };
-  } catch (err) {
-    console.error("Error sending notification:", err);
-    return { success: false, error: err.message };
-  }
+// Function to add a notification
+function addNotification(notification) {
+  const validation = validateNotification(notification);
+  if (!validation.valid) return validation;
+  const newNotification = { ...notification, date: new Date().toISOString().split("T")[0] };
+  notifications.push(newNotification);
+  return { valid: true, notification: newNotification };
 }
 &nbsp;
-module.exports = { loadVolunteers, sendNotification };
-&nbsp;</pre></td></tr></table></pre>
+// Export functions and data
+module.exports = { notifications, validateNotification, addNotification };</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-31T06:27:34.436Z
+                at 2025-10-31T07:56:00.800Z
             </div>
         <script src="../prettify.js"></script>
         <script>

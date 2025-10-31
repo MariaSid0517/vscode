@@ -1,68 +1,45 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const historyBody = document.getElementById("historyBody");
+  const userId = localStorage.getItem("user_id");
 
-  //  Default hardcoded matches
-  const defaultMatches = [
-    {
-      volunteerName: "Maria Siddeeque",
-      eventName: "Community Cleanup",
-      eventDate: "2025-09-12",
-      location: "Houston Park, TX",
-      skills: ["Teamwork", "Leadership"],
-      urgency: "Medium",
-      status: "completed",
-    },
-    {
-      volunteerName: "Matthew Reyna",
-      eventName: "Food Bank Support",
-      eventDate: "2025-08-21",
-      location: "Downtown Food Bank",
-      skills: ["Communication", "Organization"],
-      urgency: "High",
-      status: "pending",
-    },
-    {
-      volunteerName: "Madeeha Siddeeque",
-      eventName: "Senior Center Tech Help",
-      eventDate: "2025-07-14",
-      location: "Sunrise Senior Center",
-      skills: ["Technical", "Patience"],
-      urgency: "Low",
-      status: "completed",
-    },
-    {
-      volunteerName: "Jane Doe",
-      eventName: "Disaster Relief Drive",
-      eventDate: "2025-05-09",
-      location: "Community Hall",
-      skills: ["Organization", "Teamwork"],
-      urgency: "Critical",
-      status: "cancelled",
-    },
-  ];
+  if (!userId) {
+    historyBody.innerHTML = `<tr><td colspan="7">Please log in to view your history.</td></tr>`;
+    return;
+  }
 
-  //  If localStorage has matches, use those; otherwise use defaults
-  const storedMatches = JSON.parse(localStorage.getItem("matches"));
-  const matches =
-    storedMatches && Array.isArray(storedMatches) && storedMatches.length > 0
-      ? storedMatches
-      : defaultMatches;
+  try {
+    // ✅ Correct endpoint
+    const res = await fetch(`http://localhost:3000/match/completed?user_id=${userId}`);
+    if (!res.ok) throw new Error("Server error: " + res.status);
 
-  //  Clear the table before rendering
-  historyBody.innerHTML = "";
+    const events = await res.json();
 
-  //  Render the matches
-  matches.forEach((record) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${record.volunteerName}</td>
-      <td>${record.eventName}</td>
-      <td>${record.eventDate}</td>
-      <td>${record.location}</td>
-      <td>${record.skills.join(", ")}</td>
-      <td>${record.urgency}</td>
-      <td class="status ${record.status.toLowerCase()}">${record.status}</td>
-    `;
-    historyBody.appendChild(tr);
-  });
+    if (!events || events.length === 0) {
+      historyBody.innerHTML = `<tr><td colspan="7">No completed events yet.</td></tr>`;
+      return;
+    }
+
+    historyBody.innerHTML = "";
+
+    events.forEach((ev) => {
+      const date = ev.event_date
+        ? new Date(ev.event_date).toLocaleDateString()
+        : "—";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${ev.event_name}</td>
+        <td>${ev.event_description || "—"}</td>
+        <td>${ev.location || "—"}</td>
+        <td>${ev.required_skills || "—"}</td>
+        <td>${ev.urgency || "—"}</td>
+        <td>${date}</td>
+        <td class="status completed">Completed</td>
+      `;
+      historyBody.appendChild(tr);
+    });
+  } catch (err) {
+    console.error("Error loading history:", err);
+    historyBody.innerHTML = `<tr><td colspan="7">Error loading history: ${err.message}</td></tr>`;
+  }
 });

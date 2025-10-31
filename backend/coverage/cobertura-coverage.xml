@@ -1,19 +1,11 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<<<<<<< HEAD
-<coverage lines-valid="75" lines-covered="73" line-rate="0.9732999999999999" branches-valid="106" branches-covered="97" branch-rate="0.915" timestamp="1761884027437" complexity="0" version="0.1">
-=======
-<coverage lines-valid="211" lines-covered="82" line-rate="0.3886" branches-valid="150" branches-covered="95" branch-rate="0.6333" timestamp="1761885700614" complexity="0" version="0.1">
->>>>>>> 3f8e5d33c583bcb19993d21bc1bd976e5442adb3
+<coverage lines-valid="211" lines-covered="82" line-rate="0.3886" branches-valid="150" branches-covered="95" branch-rate="0.6333" timestamp="1761897360855" complexity="0" version="0.1">
   <sources>
     <source>C:\Users\socce\cosc4353-project\vscode\backend</source>
   </sources>
   <packages>
-<<<<<<< HEAD
-    <package name="Admin" line-rate="0.9534" branch-rate="0.9">
-=======
     <package name="Admin" line-rate="0.3982" branch-rate="0.6847">
->>>>>>> 3f8e5d33c583bcb19993d21bc1bd976e5442adb3
       <classes>
         <class name="VolunteerHistory.js" filename="Admin\VolunteerHistory.js" line-rate="0.875" branch-rate="0.7777">
           <methods>
@@ -71,8 +63,6 @@
             <line number="22" hits="4" branch="true" condition-coverage="75% (3/4)"/>
             <line number="24" hits="4" branch="false"/>
             <line number="27" hits="1" branch="false"/>
-<<<<<<< HEAD
-=======
           </lines>
         </class>
         <class name="matchform.js" filename="Admin\matchform.js" line-rate="0.0571" branch-rate="0">
@@ -254,7 +244,6 @@
             <line number="115" hits="0" branch="false"/>
             <line number="116" hits="0" branch="false"/>
             <line number="121" hits="4" branch="false"/>
->>>>>>> 3f8e5d33c583bcb19993d21bc1bd976e5442adb3
           </lines>
         </class>
         <class name="notifications.js" filename="Admin\notifications.js" line-rate="1" branch-rate="1">

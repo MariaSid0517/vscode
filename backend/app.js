@@ -6,24 +6,44 @@ const db = require('./db');
 
 // Import routes
 const eventRoutes = require('./routes/eventRoutes');
-const stateRoutes = require('./routes/stateRoutes'); //New states route
-const matchRoutes = require("./routes/matchformroutes");
+const stateRoutes = require('./routes/stateRoutes');
+const authRoutes = require('./routes/authRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const matchRoutes = require('./routes/matchformroutes'); // volunteer matching routes
 const notificationRoutes = require('./routes/notificationRoutes');
+
 
 // Initialize app
 const app = express();
 
-// Middleware setup
-app.use(cors());
+// ✅ Allow requests from Live Server (5500) and local backends (3000)
+app.use(cors({
+  origin: [
+    'http://127.0.0.1:5500',   // VS Code Live Server
+    'http://localhost:5500',   // alternate
+    'http://127.0.0.1:3000',   // same host (self)
+    'http://localhost:3000'    // same host (self)
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
 app.use(express.json());
 
+// Optional: log requests for debugging
+app.use((req, _res, next) => {
+  console.log(`[${req.method}] ${req.url}`);
+  next();
+});
+
 // Health check
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.send('Server is running and connected to Azure MySQL.');
 });
 
-// Quick DB test
-app.get('/test-db', async (req, res) => {
+// DB test
+app.get('/test-db', async (_req, res) => {
   try {
     const [rows] = await db.query('SELECT NOW() AS server_time;');
     res.json({ connected: true, server_time: rows[0].server_time });
@@ -34,22 +54,19 @@ app.get('/test-db', async (req, res) => {
 });
 
 // Register routes
-app.use('/events', eventRoutes);   // Event CRUD endpoints
-app.use('/states', stateRoutes);   //  New States API
-app.use("/match", matchRoutes); // Routes prefixed with /match
-app.use('/notifications', notificationRoutes);
+app.use('/events', eventRoutes);
+app.use('/states', stateRoutes);
+app.use('/', authRoutes);        // /register, /login
+app.use('/', profileRoutes);     // /profiles/:user_id
+app.use('/match', matchRoutes);  // volunteer matching
+app.use('/', notificationRoutes);
 
-// Optional user test route
-app.get('/users', async (req, res) => {
-  try {
-    const [rows] = await db.query('SELECT * FROM usercredentials;');
-    res.json(rows);
-  } catch (err) {
-    console.error('User fetch failed:', err);
-    res.status(500).json({ error: 'Database query failed' });
-  }
+
+// 404 fallback
+app.use((_req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
 
-// Start the server
-const PORT = process.env.PORT || 3001; // changed default port
+// Start server on 3000
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

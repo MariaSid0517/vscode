@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Volunteer Events</title>
   <link rel="stylesheet" href="Event.css">
-  <script type="text/javascript" src="/backend/Volunteer/Event.js"></script>
 </head>
 <body>
 
@@ -27,8 +26,8 @@
           <th>Date</th>
           <th>Time</th>
           <th>Location</th>
-          <th>Role</th>
-          <th>Status</th>
+          <th>Matched On</th>
+          <th>Action</th> <!-- ✅ Added header for button -->
         </tr>
       </thead>
       <tbody>
@@ -37,5 +36,7 @@
     </table>
   </div>
 
+  <!-- ✅ Correct relative path for JS file -->
+  <script defer src="../../../backend/Volunteer/Event.js"></script>
 </body>
 </html>

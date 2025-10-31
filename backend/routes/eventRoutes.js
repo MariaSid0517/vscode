@@ -10,11 +10,12 @@ router.post('/', async (req, res) => {
 
   const errors = validateEvent(event);
   if (errors.length > 0) {
-    console.log(" Validation errors:", errors);
+    console.log("Validation errors:", errors);
     return res.status(400).json({ errors });
   }
 
   try {
+    // Insert the event into the database
     const [result] = await db.query(
       `INSERT INTO eventdetails 
       (event_name, event_description, event_date, location, state_id, max_volunteers, required_skills, urgency)
@@ -32,7 +33,18 @@ router.post('/', async (req, res) => {
     );
 
     console.log("Event inserted, ID:", result.insertId);
-    res.status(201).json({ message: 'Event created successfully', event_id: result.insertId });
+
+    // ✅ Send a notification to all volunteers about this new event
+    await db.query(`
+      INSERT INTO notifications (volunteer_id, type, message, date_sent)
+      SELECT profile_id, 'New Event', CONCAT('A new event "', ?, '" has been added!'), CURDATE()
+      FROM userprofile
+    `, [event.name]);
+
+    res.status(201).json({
+      message: 'Event created successfully and notifications sent.',
+      event_id: result.insertId
+    });
   } catch (err) {
     console.error('Error inserting event:', err);
     res.status(500).json({ error: 'Failed to create event' });

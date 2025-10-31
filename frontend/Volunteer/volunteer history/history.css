@@ -27,7 +27,8 @@ table {
   border-radius: 8px;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -49,6 +50,7 @@ tr:hover {
   text-transform: capitalize;
 }
 
+/* Status color coding */
 .status.completed {
   color: #28a745;
 }
@@ -61,18 +63,22 @@ tr:hover {
   color: #dc3545;
 }
 
+/* Responsive adjustments */
 @media (max-width: 768px) {
   table {
     font-size: 14px;
   }
-  th, td {
+  th,
+  td {
     padding: 10px;
   }
 }
-*{
-    font-family:"Times New Roman",Cambria,Georgia, Times, serif;
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    box-sizing: border-box;
+
+/* Global font consistency */
+* {
+  font-family: "Times New Roman", Cambria, Georgia, Times, serif;
+  margin: 0;
+  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
 }

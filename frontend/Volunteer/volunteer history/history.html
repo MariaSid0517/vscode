@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="history.css" />
 </head>
 <body>
+
   <!-- Navbar -->
   <div id="navbar-placeholder"></div>
   <script type="module">
@@ -14,6 +15,7 @@
     loadNavbar();
   </script>
 
+  <!-- Main Content -->
   <main class="history-container">
     <h1>Volunteer Participation History</h1>
 
@@ -30,11 +32,11 @@
         </tr>
       </thead>
       <tbody id="historyBody">
-        <!-- Populated via JS -->
+        <!-- Filled dynamically by JS -->
       </tbody>
     </table>
   </main>
 
-  <script src="/backend/Volunteer/history.js"></script>
+  <script defer src="../../../backend/Volunteer/history.js"></script>
 </body>
 </html>
