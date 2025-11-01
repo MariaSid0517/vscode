@@ -1,35 +1,62 @@
-let notifications = [
-  {
-    volunteer: "Maria Siddeeque",
-    type: "Event Assignment",
-    message: "You have been assigned to the Mental Health Outreach event.",
-    date: "2025-10-10"
-  },
-  {
-    volunteer: "Matthew Reyna",
-    type: "Reminder",
-    message: "Don't forget the Health Clinic event tomorrow at 9 AM!",
-    date: "2025-10-11"
+document.addEventListener("DOMContentLoaded", () => {
+  loadVolunteers();
+
+  const form = document.getElementById("notificationForm");
+  form.addEventListener("submit", sendNotification);
+});
+
+// Load all volunteers into dropdown
+async function loadVolunteers() {
+  const volunteerSelect = document.getElementById("volunteer");
+
+  try {
+    const res = await fetch("http://localhost:3000/notifications/volunteers");
+    const data = await res.json();
+
+    volunteerSelect.innerHTML = `<option value="0">-- All Volunteers --</option>`;
+
+    data.forEach(v => {
+      const option = document.createElement("option");
+      option.value = v.profile_id; // correct ID
+      option.textContent = `${v.first_name} ${v.last_name}`;
+      volunteerSelect.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Error loading volunteers:", err);
+    alert("Error loading volunteer list.");
   }
-];
-
-// Validation function
-function validateNotification({ volunteer, type, message }) {
-  if (!volunteer || !type || !message) return { valid: false, error: "All fields are required." };
-  if (volunteer.length > 50) return { valid: false, error: "Volunteer name too long." };
-  if (type.length > 30) return { valid: false, error: "Type too long." };
-  if (message.length > 500) return { valid: false, error: "Message too long." };
-  return { valid: true };
 }
 
-// Function to add a notification
-function addNotification(notification) {
-  const validation = validateNotification(notification);
-  if (!validation.valid) return validation;
-  const newNotification = { ...notification, date: new Date().toISOString().split("T")[0] };
-  notifications.push(newNotification);
-  return { valid: true, notification: newNotification };
-}
+// Send notification
+async function sendNotification(e) {
+  e.preventDefault();
 
-// Export functions and data
-module.exports = { notifications, validateNotification, addNotification };
+  const volunteer_id = document.getElementById("volunteer").value;
+  const type = document.getElementById("notificationType").value;
+  const message = document.getElementById("message").value;
+
+  if (!type || !message) {
+    alert("Type and message are required.");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:3000/notifications/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ volunteer_id, type, message })
+    });
+
+    const result = await res.json();
+
+    if (result.success) {
+      alert("Notification sent!");
+      document.getElementById("notificationForm").reset();
+    } else {
+      alert("Failed to send notification: " + (result.message || ""));
+    }
+  } catch (err) {
+    console.error("Error sending:", err);
+    alert("Server error sending notification.");
+  }
+}

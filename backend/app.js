@@ -59,7 +59,7 @@ app.use('/states', stateRoutes);
 app.use('/', authRoutes);        // /register, /login
 app.use('/', profileRoutes);     // /profiles/:user_id
 app.use('/match', matchRoutes);  // volunteer matching
-app.use('/', notificationRoutes);
+app.use('/notifications', notificationRoutes);
 
 
 // 404 fallback
