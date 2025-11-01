@@ -9,7 +9,7 @@ const toList = (str) =>
     .map((s) => s.trim().toLowerCase())
     .filter(Boolean);
 
-// 🧩 1️⃣ Get all volunteers
+
 router.get("/volunteers", async (_req, res) => {
   try {
     const [rows] = await db.query(`
@@ -29,7 +29,7 @@ router.get("/volunteers", async (_req, res) => {
   }
 });
 
-// 🧩 2️⃣ Get all events
+
 router.get("/events", async (_req, res) => {
   try {
     const [rows] = await db.query(`
@@ -49,7 +49,7 @@ router.get("/events", async (_req, res) => {
   }
 });
 
-// 🧩 3️⃣ Assign volunteer to event
+
 router.post("/assign", async (req, res) => {
   const { volunteer_id, event_id } = req.body || {};
   if (!volunteer_id || !event_id)
@@ -80,7 +80,7 @@ router.post("/assign", async (req, res) => {
   }
 });
 
-// 🧩 4️⃣ List all matches for admin
+
 router.get("/list", async (_req, res) => {
   try {
     const [rows] = await db.query(`
@@ -105,7 +105,7 @@ router.get("/list", async (_req, res) => {
   }
 });
 
-// 🧩 5️⃣ Get matches by user (exclude completed)
+
 router.get("/my", async (req, res) => {
   const userId = parseInt(req.query.user_id, 10);
   if (!userId) return res.status(400).send("Missing user_id");
@@ -142,7 +142,7 @@ router.get("/my", async (req, res) => {
   }
 });
 
-// 🧩 6️⃣ Mark event as completed
+
 router.post("/complete", async (req, res) => {
   const { user_id, event_id } = req.body;
 
@@ -169,7 +169,7 @@ router.post("/complete", async (req, res) => {
   }
 });
 
-// 🧩 7️⃣ Get completed events for history
+
 router.get("/completed", async (req, res) => {
   const userId = parseInt(req.query.user_id, 10);
   if (!userId) return res.status(400).send("Missing user_id");

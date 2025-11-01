@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    // ✅ Correct endpoint
+  
     const res = await fetch(`http://localhost:3000/match/completed?user_id=${userId}`);
     if (!res.ok) throw new Error("Server error: " + res.status);
 

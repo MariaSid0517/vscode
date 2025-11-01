@@ -14,7 +14,7 @@ beforeEach(() => {
 
   // Mock alert and confirm
   global.alert = jest.fn();
-  global.confirm = jest.fn(() => true); // Always "yes"
+  global.confirm = jest.fn(() => true); 
 
   // Load script
   ({ initMatchForm, volunteers, events, matches } = require("../Admin/matchform.js"));

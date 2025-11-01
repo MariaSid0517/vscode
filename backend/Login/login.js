@@ -1,6 +1,6 @@
 // backend/Login/login.js
 
-console.log("✅ login.js loaded");
+console.log(" login.js loaded");
 
 function validateLoginFields(email, password) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,11 +18,11 @@ function validateLoginFields(email, password) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ Login page initialized");
+  console.log(" Login page initialized");
 
   const form = document.getElementById("loginform");
   if (!form) {
-    console.error("❌ Login form not found!");
+    console.error(" Login form not found!");
     return;
   }
 
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await res.json();
-      console.log("✅ Login success:", data);
+      console.log(" Login success:", data);
 
       localStorage.setItem("user_id", data.user_id);
       localStorage.setItem("role", data.role);
@@ -79,13 +79,13 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Unknown user role. Please contact support.");
       }
     } catch (err) {
-      console.error("❌ Login error:", err);
+      console.error(" Login error:", err);
       alert("Login failed: " + err.message);
     }
   });
 });
 
-// ✅ Make this available for Jest tests (Node environment)
+//  Make this available for Jest tests (Node environment)
 if (typeof module !== "undefined") {
   module.exports = { validateLoginFields };
 }

@@ -1,5 +1,5 @@
 // backend/__tests__/events.test.js
-const { validateEvent } = require("../Admin/event.js"); // Adjust path
+const { validateEvent } = require("../Admin/event.js"); 
 
 describe("Event Validation", () => {
 
@@ -14,7 +14,7 @@ describe("Event Validation", () => {
     };
 
     const errors = validateEvent(event);
-    expect(errors).toHaveLength(0); // No errors
+    expect(errors).toHaveLength(0); 
   });
 
   test("Missing required fields should fail", () => {

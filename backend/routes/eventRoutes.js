@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
 
     console.log("Event inserted, ID:", result.insertId);
 
-    // ✅ Send a notification to all volunteers about this new event
+    // Send a notification to all volunteers about this new event
     await db.query(`
       INSERT INTO notifications (volunteer_id, type, message, date_sent)
       SELECT profile_id, 'New Event', CONCAT('A new event "', ?, '" has been added!'), CURDATE()

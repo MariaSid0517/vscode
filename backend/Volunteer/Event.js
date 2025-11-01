@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// ✅ Handle “Mark Completed” button click
+
 document.addEventListener("click", async (e) => {
   if (e.target.classList.contains("complete-btn")) {
     const eventId = e.target.getAttribute("data-id");
@@ -67,7 +67,7 @@ document.addEventListener("click", async (e) => {
 
       if (res.ok) {
         alert(data.message || "Event marked as completed!");
-        e.target.textContent = "Completed ✅";
+        e.target.textContent = "Completed";
         e.target.disabled = true;
         e.target.style.backgroundColor = "#28a745";
       } else {

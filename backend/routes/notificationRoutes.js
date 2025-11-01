@@ -2,9 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
-/* ===========================================================
-   📨 1️⃣ Admin manually creates a notification
-   =========================================================== */
+
 router.post("/notifications", async (req, res) => {
   const { volunteer_id, type, message } = req.body;
 
@@ -25,10 +23,7 @@ router.post("/notifications", async (req, res) => {
   }
 });
 
-/* ===========================================================
-   📬 2️⃣ Volunteer fetches notifications (JSON, API)
-   — now uses user_id instead of volunteer_id
-   =========================================================== */
+
 router.get("/notifications/:user_id", async (req, res) => {
   const { user_id } = req.params;
 
@@ -59,10 +54,7 @@ router.get("/notifications/:user_id", async (req, res) => {
   }
 });
 
-/* ===========================================================
-   🧾 3️⃣ Volunteer-friendly view (HTML page)
-   — now uses user_id instead of volunteer_id
-   =========================================================== */
+
 router.get("/notifications/view/:user_id", async (req, res) => {
   const { user_id } = req.params;
 
