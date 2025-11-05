@@ -25,10 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
       if (data.success) {
-        alert("✅ Notification sent!");
+        alert("Notification sent!");
         form.reset();
       } else {
-        alert("❌ Failed: " + (data.message || "Server error"));
+        alert("Failed: " + (data.message || "Server error"));
       }
     } catch (err) {
       console.error(err);

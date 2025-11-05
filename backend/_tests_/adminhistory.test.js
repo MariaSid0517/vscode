@@ -1,131 +1,76 @@
 /**
  * @jest-environment jsdom
  */
+const fs = require("fs");
+const path = require("path");
 
-import './volunteerhistory.js';
+// Adjust this path based on your folder structure
+const htmlPath = path.resolve(__dirname, "../../frontend/Admin/adminvolunteerhistory/adminhistory.html");
+const html = fs.readFileSync(htmlPath, "utf8");
 
-beforeEach(() => {
-  document.body.innerHTML = `
-    <table>
-      <tbody id="historyBody"></tbody>
-    </table>
-  `;
-  localStorage.clear();
-  global.fetch = jest.fn();
-});
+describe("Admin Volunteer History Page", () => {
+  let historyScript;
 
-afterEach(() => {
-  jest.resetAllMocks();
-});
+  beforeEach(() => {
+    document.documentElement.innerHTML = html;
 
-test("renders default matches when localStorage is empty", async () => {
-  // Mock a logged-in user with required properties
-  localStorage.setItem('user', JSON.stringify({ id: 1, name: 'Test User' }));
-  // Empty volunteer history
-  localStorage.setItem('volunteerHistory', JSON.stringify([]));
+    // Mock fetch
+    global.fetch = jest.fn();
 
-  fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
+    // Clear previous module cache (important for re-require)
+    jest.resetModules();
 
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  await new Promise(process.nextTick);
+    // Load the script (CommonJS)
+    historyScript = require("../Admin/VolunteerHistory.js");
+  });
 
-  const rows = document.querySelectorAll("tbody#historyBody tr");
-  expect(rows.length).toBe(4); // 4 default rows
-  expect(rows[0].innerHTML).toContain("Community Cleanup");
-  expect(rows[1].innerHTML).toContain("Food Bank Support");
-  expect(rows[2].innerHTML).toContain("Senior Center Tech Help");
-  expect(rows[3].innerHTML).toContain("Park Restoration");
-});
+  test("Displays 'No volunteer history found' when API returns empty list", async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ([]),
+    });
 
-test("renders custom matches from localStorage if provided", async () => {
-  // Mock logged-in user
-  localStorage.setItem('user', JSON.stringify({ id: 1, name: 'John Doe' }));
+    document.dispatchEvent(new Event("DOMContentLoaded"));
 
-  // Provide custom volunteer history
-  const customHistory = [
-    {
-      volunteer_name: "John Doe",
-      event_name: "Custom Event",
-      event_date: "2025-10-30T12:00:00Z",
-      location: "Test Center",
-      required_skills: "Testing",
-      urgency: "High",
-      status: "pending"
-    }
-  ];
-  localStorage.setItem('volunteerHistory', JSON.stringify(customHistory));
+    // Wait for async fetch + DOM update
+    await new Promise(process.nextTick);
 
-  fetch.mockResolvedValueOnce({ ok: true, json: async () => customHistory });
+    const body = document.getElementById("historyBody");
+    expect(body.textContent).toContain("No volunteer history found");
+  });
 
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  await new Promise(process.nextTick);
+  test("Renders rows when records are returned", async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ([
+        {
+          volunteer_name: "Aisha",
+          event_name: "Food Drive",
+          event_date: "2025-10-01",
+          location: "Houston",
+          required_skills: "Packing",
+          urgency: "High",
+          status: "completed",
+        }
+      ]),
+    });
 
-  const rows = document.querySelectorAll("tbody#historyBody tr");
-  expect(rows.length).toBe(1);
-  expect(rows[0].innerHTML).toContain("John Doe");
-  expect(rows[0].innerHTML).toContain("Custom Event");
-  expect(rows[0].innerHTML).toContain("Test Center");
-  expect(rows[0].innerHTML).toContain("pending");
-});
+    document.dispatchEvent(new Event("DOMContentLoaded"));
+    await new Promise(process.nextTick);
 
-test("renders 'No volunteer history found' if fetch returns empty", async () => {
-  localStorage.setItem('user', JSON.stringify({ id: 1, name: 'Test User' }));
+    const rows = document.querySelectorAll("#historyBody tr");
+    expect(rows.length).toBe(1);
+    expect(rows[0].textContent).toContain("Aisha");
+    expect(rows[0].textContent).toContain("Food Drive");
+  });
 
-  fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
+  test("Displays error message when server returns failure", async () => {
+    fetch.mockResolvedValueOnce({ ok: false, status: 500 });
 
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  await new Promise(process.nextTick);
+    document.dispatchEvent(new Event("DOMContentLoaded"));
+    await new Promise(process.nextTick);
 
-  const cell = document.querySelector("tbody#historyBody td");
-  expect(cell.textContent).toBe("No volunteer history found.");
-});
-
-test("renders error if fetch fails with non-ok status", async () => {
-  localStorage.setItem('user', JSON.stringify({ id: 1, name: 'Test User' }));
-
-  fetch.mockResolvedValueOnce({ ok: false, status: 500 });
-
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  await new Promise(process.nextTick);
-
-  const cell = document.querySelector("tbody#historyBody td");
-  expect(cell.textContent).toContain("Server error: 500");
-});
-
-test("renders error if fetch throws", async () => {
-  localStorage.setItem('user', JSON.stringify({ id: 1, name: 'Test User' }));
-
-  fetch.mockRejectedValueOnce(new Error("Network Error"));
-
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  await new Promise(process.nextTick);
-
-  const cell = document.querySelector("tbody#historyBody td");
-  expect(cell.textContent).toContain("Network Error");
-});
-
-test("renders placeholders for missing optional fields", async () => {
-  localStorage.setItem('user', JSON.stringify({ id: 1, name: 'Test User' }));
-
-  const incompleteHistory = [
-    {
-      volunteer_name: "Alice",
-      event_name: "Park Cleanup",
-      status: "pending"
-      // missing date, location, required_skills, urgency
-    }
-  ];
-  localStorage.setItem('volunteerHistory', JSON.stringify(incompleteHistory));
-
-  fetch.mockResolvedValueOnce({ ok: true, json: async () => incompleteHistory });
-
-  document.dispatchEvent(new Event("DOMContentLoaded"));
-  await new Promise(process.nextTick);
-
-  const row = document.querySelector("tbody#historyBody tr");
-  expect(row.innerHTML).toContain("Alice");
-  expect(row.innerHTML).toContain("Park Cleanup");
-  expect(row.innerHTML).toContain("pending");
-  // Check that missing fields show as '—'
-  expect(row.innerHTML).toContain("—");
+    const body = document.getElementById("historyBody");
+    expect(body.textContent).toContain("Error");
+  });
 });

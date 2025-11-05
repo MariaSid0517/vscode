@@ -6,7 +6,7 @@ const db = require("../db");
 router.get("/volunteers", async (req, res) => {
   try {
     const [rows] = await db.query(`
-      SELECT profile_id AS volunteer_id, first_name, last_name
+      SELECT user_id AS volunteer_id, first_name, last_name
       FROM userprofile
       ORDER BY first_name
     `);
