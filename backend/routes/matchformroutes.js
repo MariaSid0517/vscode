@@ -194,4 +194,30 @@ router.get("/completed", async (req, res) => {
   }
 });
 
+router.get("/history", async (req, res) => {
+  try {
+    const sql = `
+      SELECT 
+        CONCAT(up.first_name, ' ', up.last_name) AS volunteer_name,
+        ed.event_name,
+        ed.event_date,
+        ed.location,
+        ed.required_skills,
+        ed.urgency,
+        vm.status
+      FROM volunteermatches vm
+      JOIN userprofile up ON vm.volunteer_id = up.profile_id
+      JOIN eventdetails ed ON vm.event_id = ed.event_id
+      ORDER BY ed.event_date DESC;
+    `;
+
+    const [rows] = await db.query(sql);
+    res.json(rows);
+  } catch (err) {
+    console.error("Error retrieving volunteer history:", err);
+    res.status(500).json({ error: "Failed to load volunteer history" });
+  }
+});
+
+
 module.exports = router;

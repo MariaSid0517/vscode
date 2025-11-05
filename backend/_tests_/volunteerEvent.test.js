@@ -4,44 +4,52 @@
 const fs = require("fs");
 const path = require("path");
 
-describe("Volunteer Event Module", () => {
-  let scriptContent;
-  let tbody;
+let scriptContent;
 
-  beforeAll(() => {
-    const filePath = path.resolve(__dirname, "../Volunteer/Event.js");
-    scriptContent = fs.readFileSync(filePath, "utf8");
+beforeAll(() => {
+  const filePath = path.resolve(__dirname, "../Volunteer/Events/Event.js");
+  scriptContent = fs.readFileSync(filePath, "utf8");
+});
+
+beforeEach(() => {
+  document.body.innerHTML = `
+    <table id="eventsTable"><tbody></tbody></table>
+  `;
+  localStorage.clear();
+  eval(scriptContent);
+  document.dispatchEvent(new Event("DOMContentLoaded"));
+});
+
+describe("Volunteer Event Page", () => {
+  test("shows login message if not logged in", async () => {
+    await new Promise((r) => setTimeout(r, 0)); // wait for async
+    const cell = document.querySelector("#eventsTable tbody td");
+    expect(cell.textContent).toContain("Please log in");
   });
 
-  beforeEach(() => {
-    document.body.innerHTML = `
-      <table id="eventsTable">
-        <tbody></tbody>
-      </table>
-    `;
-    tbody = document.querySelector("#eventsTable tbody");
-
-    jest.resetModules();
-    eval(scriptContent);
-    document.dispatchEvent(new Event("DOMContentLoaded"));
+  test("renders no matched events if API returns empty", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({ ok: true, json: () => Promise.resolve([]) })
+    );
+    localStorage.setItem("user_id", "1");
+    await new Promise((r) => setTimeout(r, 0));
+    const cell = document.querySelector("#eventsTable tbody td");
+    expect(cell.textContent).toContain("No matched events");
   });
 
-  test("should populate the table with 3 event rows", () => {
-    const rows = tbody.querySelectorAll("tr");
-    expect(rows.length).toBe(3);
-  });
-
-  test("should render correct event names in rows", () => {
-    const rows = tbody.querySelectorAll("tr");
-    expect(rows[0].innerHTML).toContain("Community Clean-Up Drive");
-    expect(rows[1].innerHTML).toContain("Food Bank Distribution");
-    expect(rows[2].innerHTML).toContain("Holiday Toy Drive");
-  });
-
-  test("should apply proper status class names", () => {
-    const rows = tbody.querySelectorAll("tr");
-    expect(rows[0].querySelector("td.status-confirmed")).not.toBeNull();
-    expect(rows[1].querySelector("td.status-pending")).not.toBeNull();
-    expect(rows[2].querySelector("td.status-completed")).not.toBeNull();
+  test("renders events from API", async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            { event: { name: "Beach Cleanup", date: "2025-11-01", location: "Beach", id: 1 }, matched_at: "2025-10-30T12:00:00Z" },
+          ]),
+      })
+    );
+    localStorage.setItem("user_id", "1");
+    await new Promise((r) => setTimeout(r, 0));
+    const row = document.querySelector("#eventsTable tbody tr");
+    expect(row.innerHTML).toContain("Beach Cleanup");
   });
 });

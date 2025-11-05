@@ -1,62 +1,38 @@
-function loadVolunteerHistory() {
+document.addEventListener("DOMContentLoaded", async () => {
   const historyBody = document.getElementById("historyBody");
 
-  if (!historyBody) {
-    console.error("Missing #historyBody element in HTML");
-    return;
-  }
+  try {
+    const res = await fetch("http://localhost:3000/match/history");
+    if (!res.ok) throw new Error("Server error: " + res.status);
 
-  // Simulated backend data
-  const volunteerData = [
-    {
-      name: "Maria Siddeeque",
-      event: "Health Fair 2025",
-      date: "2025-03-12",
-      location: "Houston, TX",
-      skills: "Medical Assistance",
-      urgency: "High",
-      status: "Completed"
-    },
-    {
-      name: "Matthew Reyna",
-      event: "Dental Checkup Drive",
-      date: "2025-04-02",
-      location: "Austin, TX",
-      skills: "Logistics",
-      urgency: "Medium",
-      status: "Attended"
-    }
-  ];
+    const records = await res.json();
 
-  // Clear existing rows
-  historyBody.innerHTML = "";
-
-  volunteerData.forEach(record => {
-    // Validate required fields
-    if (!record.name || !record.event || !record.date) {
-      console.warn("Invalid record skipped:", record);
+    if (!records || records.length === 0) {
+      historyBody.innerHTML = `<tr><td colspan="7">No volunteer history found.</td></tr>`;
       return;
     }
 
-    const row = document.createElement("tr");
+    historyBody.innerHTML = "";
 
-    row.innerHTML = `
-      <td>${record.name}</td>
-      <td>${record.event}</td>
-      <td>${record.date}</td>
-      <td>${record.location}</td>
-      <td>${record.skills}</td>
-      <td>${record.urgency}</td>
-      <td>${record.status}</td>
-    `;
+    records.forEach(rec => {
+      const date = rec.event_date
+        ? new Date(rec.event_date).toLocaleDateString()
+        : "—";
 
-    historyBody.appendChild(row);
-  });
-}
-
-// Auto-run in browser
-if (typeof window !== "undefined") {
-  window.addEventListener("DOMContentLoaded", loadVolunteerHistory);
-}
-
-module.exports = { loadVolunteerHistory };
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${rec.volunteer_name}</td>
+        <td>${rec.event_name}</td>
+        <td>${date}</td>
+        <td>${rec.location || "—"}</td>
+        <td>${rec.required_skills || "—"}</td>
+        <td>${rec.urgency || "—"}</td>
+        <td class="status ${rec.status}">${rec.status}</td>
+      `;
+      historyBody.appendChild(row);
+    });
+  } catch (err) {
+    console.error("Error loading history:", err);
+    historyBody.innerHTML = `<tr><td colspan="7">Error: ${err.message}</td></tr>`;
+  }
+});

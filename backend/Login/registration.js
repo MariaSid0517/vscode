@@ -1,12 +1,9 @@
-// backend/Login/registration.js
-
 console.log("registration.js loaded");
 
-function validateRegistrationFields(email, password, confirmPassword, role) {
+function validateRegistrationFields(email, password, confirmPassword) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const validRoles = ["volunteer", "admin"];
 
-  if (!email || !password || !confirmPassword || !role) {
+  if (!email || !password || !confirmPassword) {
     return { valid: false, error: "All fields are required." };
   }
   if (!emailPattern.test(email)) {
@@ -30,16 +27,11 @@ function validateRegistrationFields(email, password, confirmPassword, role) {
   if (password !== confirmPassword) {
     return { valid: false, error: "Passwords do not match." };
   }
-  if (!validRoles.includes(role.toLowerCase())) {
-    return { valid: false, error: "Invalid role selected." };
-  }
 
   return { valid: true };
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log(" Registration page ready");
-
   const form = document.getElementById("registrationform");
   if (!form) return;
 
@@ -49,9 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
     const confirmPassword = document.getElementById("confirmPassword").value.trim();
-    const role = document.getElementById("role").value;
 
-    const validation = validateRegistrationFields(email, password, confirmPassword, role);
+    const validation = validateRegistrationFields(email, password, confirmPassword);
     if (!validation.valid) {
       alert(validation.error);
       return;
@@ -61,25 +52,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("http://localhost:3000/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role }),
+        body: JSON.stringify({ email, password }), // role will default to volunteer in backend
       });
 
-      if (!res.ok) {
-        throw new Error(`Registration failed: HTTP ${res.status}`);
-      }
+      if (!res.ok) throw new Error(`Registration failed: ${res.status}`);
 
-      const data = await res.json();
-      console.log(" Registered:", data);
-      alert("Registration successful!");
+      alert("Registration successful! Please log in.");
       window.location.href = "login.html";
     } catch (err) {
-      console.error(" Registration error:", err);
+      console.error("Registration error:", err);
       alert("Registration failed: " + err.message);
     }
   });
 });
 
-// Export for Jest tests
 if (typeof module !== "undefined") {
   module.exports = { validateRegistrationFields };
 }
