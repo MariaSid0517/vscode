@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="135" lines-covered="124" line-rate="0.9185" branches-valid="124" branches-covered="83" branch-rate="0.6693000000000001" timestamp="1762319188674" complexity="0" version="0.1">
+<coverage lines-valid="126" lines-covered="116" line-rate="0.9206" branches-valid="110" branches-covered="78" branch-rate="0.7090000000000001" timestamp="1762410716635" complexity="0" version="0.1">
   <sources>
     <source>C:\Users\Maria\OneDrive\Desktop\vscode\backend</source>
   </sources>
@@ -170,7 +170,7 @@
         </class>
       </classes>
     </package>
-    <package name="backend.Admin" line-rate="0.9772" branch-rate="0.8142">
+    <package name="backend.Admin" line-rate="1" branch-rate="0.9285">
       <classes>
         <class name="VolunteerHistory.js" filename="Admin\VolunteerHistory.js" line-rate="1" branch-rate="0.7142000000000001">
           <methods>
@@ -205,52 +205,33 @@
             <line number="36" hits="4" branch="false"/>
           </lines>
         </class>
-        <class name="event.js" filename="Admin\event.js" line-rate="0.9629000000000001" branch-rate="0.8392000000000001">
+        <class name="event.js" filename="Admin\event.js" line-rate="1" branch-rate="1">
           <methods>
-            <method name="validateEvent" hits="2" signature="()V">
+            <method name="validateEvent" hits="3" signature="()V">
               <lines>
-                <line number="30" hits="2"/>
-              </lines>
-            </method>
-            <method name="attachEventFormListener" hits="3" signature="()V">
-              <lines>
-                <line number="56" hits="3"/>
-              </lines>
-            </method>
-            <method name="(anonymous_2)" hits="3" signature="()V">
-              <lines>
-                <line number="58" hits="3"/>
+                <line number="29" hits="3"/>
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="31" hits="2" branch="false"/>
-            <line number="33" hits="2" branch="true" condition-coverage="100% (4/4)"/>
-            <line number="34" hits="2" branch="true" condition-coverage="100% (4/4)"/>
-            <line number="35" hits="2" branch="true" condition-coverage="100% (4/4)"/>
-            <line number="36" hits="2" branch="true" condition-coverage="100% (4/4)"/>
-            <line number="39" hits="2" branch="true" condition-coverage="75% (3/4)"/>
-            <line number="40" hits="2" branch="true" condition-coverage="75% (3/4)"/>
-            <line number="41" hits="2" branch="true" condition-coverage="75% (3/4)"/>
-            <line number="42" hits="2" branch="true" condition-coverage="100% (4/4)"/>
-            <line number="45" hits="2" branch="true" condition-coverage="100% (4/4)"/>
-            <line number="48" hits="2" branch="true" condition-coverage="75% (3/4)"/>
-            <line number="49" hits="2" branch="true" condition-coverage="75% (3/4)"/>
-            <line number="50" hits="2" branch="true" condition-coverage="75% (3/4)"/>
-            <line number="52" hits="2" branch="false"/>
-            <line number="57" hits="3" branch="false"/>
-            <line number="58" hits="3" branch="false"/>
-            <line number="59" hits="3" branch="false"/>
-            <line number="60" hits="3" branch="false"/>
-            <line number="71" hits="3" branch="false"/>
-            <line number="72" hits="3" branch="false"/>
-            <line number="77" hits="2" branch="false"/>
-            <line number="78" hits="1" branch="true" condition-coverage="50% (1/2)"/>
-            <line number="79" hits="1" branch="false"/>
-            <line number="80" hits="1" branch="false"/>
-            <line number="82" hits="0" branch="true" condition-coverage="0% (0/2)"/>
-            <line number="85" hits="2" branch="false"/>
-            <line number="90" hits="1" branch="false"/>
+            <line number="30" hits="3" branch="false"/>
+            <line number="33" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="34" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="35" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="36" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="39" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="40" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="41" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="43" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="44" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="45" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="46" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="49" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="52" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="53" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="54" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="56" hits="3" branch="false"/>
+            <line number="59" hits="1" branch="false"/>
           </lines>
         </class>
       </classes>

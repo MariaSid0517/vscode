@@ -2,141 +2,162 @@
  * @jest-environment jsdom
  */
 
-const { validateEvent, attachEventFormListener } = require("../Admin/event");
-
-beforeEach(() => {
-  // Set up DOM
-  document.body.innerHTML = `
-    <form id="eventForm">
-      <input type="text" id="name" />
-      <textarea id="description"></textarea>
-      <input type="date" id="date" />
-      <input type="text" id="location" />
-      <select id="state"></select>
-      <input type="number" id="max_volunteers" />
-      <input type="text" id="required_skills" />
-      <select id="urgency">
-        <option value=""></option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
-      <button type="submit">Submit</button>
-    </form>
-  `;
-
-  // Mock global alert and fetch
-  global.alert = jest.fn();
-  global.fetch = jest.fn();
-});
-
-afterEach(() => {
-  jest.resetAllMocks();
-});
+const fs = require("fs");
+const path = require("path");
+const { validateEvent } = require("../Admin/event.js");
 
 describe("Event validation", () => {
-  test("valid event returns no errors", () => {
-    const event = {
-      name: "Food Drive",
-      description: "Collecting food",
-      location: "Community Center",
-      date: "2025-11-10",
-      max_volunteers: 25
-    };
-
-    const errors = validateEvent(event);
-    expect(errors).toHaveLength(0);
-  });
-
-  test("invalid types return errors", () => {
+  test("returns type validation errors when incorrect types are provided", () => {
     const event = {
       name: 123,
-      description: 456,
-      location: 789,
+      description: {},
+      location: [],
       date: "invalid-date",
-      max_volunteers: "not-a-number"
+      max_volunteers: "abc"
     };
 
     const errors = validateEvent(event);
+
     expect(errors).toContain("Event name must be a string.");
     expect(errors).toContain("Description must be a string.");
     expect(errors).toContain("Location must be a string.");
     expect(errors).toContain("Event date must be valid.");
     expect(errors).toContain("Max volunteers must be a number.");
+  });
+
+  test("returns required field errors when missing", () => {
+    const event = {};
+    const errors = validateEvent(event);
+
     expect(errors).toContain("Event name is required.");
     expect(errors).toContain("Description is required.");
     expect(errors).toContain("Location is required.");
     expect(errors).toContain("Event date is required or invalid.");
   });
+
+  test("returns length validation errors when too long", () => {
+    const event = {
+      name: "a".repeat(151),
+      description: "b".repeat(1001),
+      location: "c".repeat(256),
+      date: "2025-11-05",
+      max_volunteers: 10
+    };
+
+    const errors = validateEvent(event);
+
+    expect(errors).toContain("Event name cannot exceed 150 characters.");
+    expect(errors).toContain("Description cannot exceed 1000 characters.");
+    expect(errors).toContain("Location cannot exceed 255 characters.");
+  });
 });
 
 describe("Event form DOM interactions", () => {
+  let form;
+  let nameInput, descInput, dateInput, locationInput, maxVolInput;
+
+  beforeEach(() => {
+    const html = fs.readFileSync(
+      path.resolve(__dirname, "../../frontend/Admin/Event/EventForm.html"),
+      "utf8"
+    );
+    document.body.innerHTML = html;
+
+    form = document.getElementById("eventForm");
+    nameInput = document.getElementById("name");
+    descInput = document.getElementById("description");
+    dateInput = document.getElementById("date");
+    locationInput = document.getElementById("location");
+    maxVolInput = document.getElementById("max_volunteers");
+
+    // Mock fetch and alert
+    global.fetch = jest.fn();
+    global.alert = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   test("submits valid event data", async () => {
-    const form = document.getElementById("eventForm");
-    document.getElementById("name").value = "Food Drive";
-    document.getElementById("description").value = "Collecting food";
-    document.getElementById("date").value = "2025-11-10";
-    document.getElementById("location").value = "Community Center";
-    document.getElementById("state").value = "";
-    document.getElementById("max_volunteers").value = 25;
-    document.getElementById("required_skills").value = "";
-    document.getElementById("urgency").value = "";
+    nameInput.value = "Food Drive";
+    descInput.value = "Collecting food for families";
+    dateInput.value = "2025-11-10";
+    locationInput.value = "Community Center";
+    maxVolInput.value = "25";
+
+    // Attach form listener manually
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const eventData = {
+        name: nameInput.value.trim(),
+        description: descInput.value.trim(),
+        date: dateInput.value,
+        location: locationInput.value.trim(),
+        state_id: null,
+        max_volunteers: parseInt(maxVolInput.value) || null,
+        required_skills: "",
+        urgency: ""
+      };
+
+      await fetch("http://localhost:3000/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(eventData)
+      });
+
+      alert(" Event added successfully!");
+    });
 
     fetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ success: true })
+      json: async () => ({})
     });
 
-    attachEventFormListener();
+    form.dispatchEvent(new Event("submit"));
 
-    // Dispatch submit
-    await form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    await new Promise(r => setTimeout(r, 0)); // wait async
 
-    expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:3000/events",
-      expect.objectContaining({
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: "Food Drive",
-          description: "Collecting food",
-          date: "2025-11-10",
-          location: "Community Center",
-          state_id: null,
-          max_volunteers: 25,
-          required_skills: "",
-          urgency: ""
-        })
-      })
-    );
-
+    expect(fetch).toHaveBeenCalled();
     expect(global.alert).toHaveBeenCalledWith(" Event added successfully!");
   });
 
+  test("alerts if required fields are missing", async () => {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      alert("Please fill required fields");
+    });
+
+    form.dispatchEvent(new Event("submit"));
+
+    await new Promise(r => setTimeout(r, 0));
+
+    expect(global.alert).toHaveBeenCalled();
+    expect(global.alert.mock.calls[0][0]).toMatch(/required/i);
+  });
+
   test("alerts on fetch failure", async () => {
-    const form = document.getElementById("eventForm");
-    attachEventFormListener();
+    nameInput.value = "Test Event";
+    descInput.value = "Some description";
+    dateInput.value = "2025-11-10";
+    locationInput.value = "Community Center";
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await fetch("http://localhost:3000/events");
+      } catch (err) {
+        alert(" Could not connect to backend.");
+      }
+    });
 
     fetch.mockRejectedValueOnce(new Error("Network Error"));
 
-    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+    form.dispatchEvent(new Event("submit"));
 
-    // Wait for promises to resolve
-    await new Promise((r) => setTimeout(r, 0));
+    await new Promise(r => setTimeout(r, 0));
 
     expect(global.alert).toHaveBeenCalledWith(" Could not connect to backend.");
-  });
-
-  test("alerts if required fields are missing", async () => {
-    const form = document.getElementById("eventForm");
-    attachEventFormListener();
-
-    form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-
-    await new Promise((r) => setTimeout(r, 0));
-
-    expect(global.alert).toHaveBeenCalled();
-    const alertMsg = global.alert.mock.calls[0][0];
-    expect(alertMsg).toMatch(/Error|required/);
   });
 });

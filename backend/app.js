@@ -16,7 +16,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 // Initialize app
 const app = express();
 
-// ✅ Allow requests from Live Server (5500) and local backends (3000)
+// Allow requests from Live Server (5500) and local backends (3000)
 app.use(cors({
   origin: [
     'http://127.0.0.1:5500',   // VS Code Live Server
