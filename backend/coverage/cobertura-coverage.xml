@@ -1,6 +1,10 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<<<<<<< HEAD
 <coverage lines-valid="126" lines-covered="116" line-rate="0.9206" branches-valid="110" branches-covered="78" branch-rate="0.7090000000000001" timestamp="1762491207256" complexity="0" version="0.1">
+=======
+<coverage lines-valid="160" lines-covered="124" line-rate="0.775" branches-valid="130" branches-covered="85" branch-rate="0.6537999999999999" timestamp="1762411076594" complexity="0" version="0.1">
+>>>>>>> 86b3bc8824782b9c9573010c88ac848c0df8cc53
   <sources>
     <source>C:\Users\socce\cosc4353-project\vscode\backend</source>
   </sources>
@@ -232,6 +236,65 @@
             <line number="54" hits="3" branch="true" condition-coverage="100% (2/2)"/>
             <line number="56" hits="3" branch="false"/>
             <line number="59" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="backend.Login" line-rate="0.2352" branch-rate="0.35">
+      <classes>
+        <class name="login.js" filename="Login\login.js" line-rate="0.2352" branch-rate="0.35">
+          <methods>
+            <method name="validateLoginFields" hits="5" signature="()V">
+              <lines>
+                <line number="3" hits="5"/>
+              </lines>
+            </method>
+            <method name="(anonymous_1)" hits="0" signature="()V">
+              <lines>
+                <line number="11" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_2)" hits="0" signature="()V">
+              <lines>
+                <line number="15" hits="0"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="1" branch="false"/>
+            <line number="4" hits="5" branch="false"/>
+            <line number="6" hits="5" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="7" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="8" hits="1" branch="false"/>
+            <line number="11" hits="1" branch="false"/>
+            <line number="12" hits="0" branch="false"/>
+            <line number="13" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="15" hits="0" branch="false"/>
+            <line number="16" hits="0" branch="false"/>
+            <line number="18" hits="0" branch="false"/>
+            <line number="19" hits="0" branch="false"/>
+            <line number="21" hits="0" branch="false"/>
+            <line number="22" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="23" hits="0" branch="false"/>
+            <line number="24" hits="0" branch="false"/>
+            <line number="27" hits="0" branch="false"/>
+            <line number="28" hits="0" branch="false"/>
+            <line number="34" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="35" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="36" hits="0" branch="false"/>
+            <line number="37" hits="0" branch="false"/>
+            <line number="40" hits="0" branch="false"/>
+            <line number="41" hits="0" branch="false"/>
+            <line number="42" hits="0" branch="false"/>
+            <line number="45" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="46" hits="0" branch="false"/>
+            <line number="47" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="48" hits="0" branch="false"/>
+            <line number="50" hits="0" branch="false"/>
+            <line number="54" hits="0" branch="false"/>
+            <line number="55" hits="0" branch="false"/>
+            <line number="60" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="61" hits="1" branch="false"/>
           </lines>
         </class>
       </classes>
