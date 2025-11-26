@@ -7,10 +7,15 @@
   <link rel="stylesheet" href="../adminvolunteerhistory/VolunteerHistory.css" />
 </head>
 <body>
-  <!-- Navbar placeholder -->
   <div id="navbar-placeholder"></div>
 
-  <main class="history-container">
+  <!-- BUTTON BAR -->
+  <div class="top-action-bar">
+    <button id="toggleViewBtn" class="report-toggle-btn">View Reports</button>
+  </div>
+
+  <!-- TABLE VIEW (default) -->
+  <main id="historyView" class="history-container">
     <h1>Volunteer Participation History</h1>
     <p class="subtitle">View all volunteers and their participation in events</p>
 
@@ -26,11 +31,32 @@
           <th>Participation Status</th>
         </tr>
       </thead>
-      <tbody id="historyBody">
-        <!-- Populated by JS -->
-      </tbody>
+      <tbody id="historyBody"></tbody>
     </table>
   </main>
+
+  <!-- REPORT VIEW -->
+  <div id="reportsView" class="report-section" style="display: none;">
+    <h2>Volunteer Reports</h2>
+
+    <!----
+    <label>Volunteer Filter</label>
+    <select id="volunteerFilter"></select>
+  --->
+
+    <div class="report-controls">
+      <label for="reportFormat">Format</label>
+      <select id="reportFormat">
+        <option value="json">JSON (Preview)</option>
+        <option value="csv">CSV (Download)</option>
+        <option value="pdf">PDF (Download)</option>
+      </select>
+
+      <button id="generateReportBtn" class="report-btn">Generate Report</button>
+    </div>
+
+    <pre id="reportOutput" class="report-output"></pre>
+  </div>
 
   <script type="module">
     import { loadNavbar } from "../../../backend/Navbar/loadNavbar.js";

@@ -36,3 +36,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     historyBody.innerHTML = `<tr><td colspan="7">Error: ${err.message}</td></tr>`;
   }
 });
+
+
+// DOM Elements
+const toggleReportBtn = document.getElementById("toggleViewBtn");
+const historyView = document.getElementById("historyView");
+const reportView = document.getElementById("reportsView");
+const reportFormat = document.getElementById("reportFormat");
+const generateBtn = document.getElementById("generateReportBtn");
+const reportOutput = document.getElementById("reportOutput");
+
+const REPORT_API = "http://localhost:3000/match/history/report";
+
+// Toggle between table view and report view
+toggleReportBtn.addEventListener("click", () => {
+  const showingReports = reportView.style.display !== "none";
+
+  if (showingReports) {
+    reportView.style.display = "none";
+    historyView.style.display = "block";
+    toggleReportBtn.textContent = "View Reports";
+  } else {
+    reportView.style.display = "block";
+    historyView.style.display = "none";
+    toggleReportBtn.textContent = "View Participation";
+  }
+});
+
+// Generate Report (JSON preview, CSV/PDF download)
+generateBtn.addEventListener("click", async () => {
+  const format = reportFormat.value;
+
+  // JSON Preview
+  if (format === "json") {
+    reportOutput.textContent = "Loading...";
+    try {
+      const res = await fetch(`${REPORT_API}?format=json`);
+      const data = await res.json();
+      reportOutput.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      reportOutput.textContent = "Error loading JSON report.";
+    }
+    return;
+  }
+
+  // CSV or PDF → direct download
+  window.open(`${REPORT_API}?format=${format}`, "_blank");
+});

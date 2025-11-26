@@ -77,3 +77,92 @@ tr:hover {
 .status.cancelled {
   background-color: #dc3545;
 }
+
+.top-action-bar {
+  width: 100%;
+  max-width: 1100px;
+  margin: 20px auto 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 20px;
+
+}
+
+.report-toggle-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #1e88e5;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin: auto;
+}
+
+.report-toggle-btn:hover {
+  background-color: #1565c0;
+}
+
+.report-section {
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.report-section h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.report-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.report-controls label {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.report-controls select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  background-color: #fdfdfd;
+  cursor: pointer;
+}
+
+.report-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  background-color: #1e88e5;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.report-btn:hover {
+  background-color: #1565c0;
+}
+
+.report-output {
+  max-height: 300px;
+  overflow: auto;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

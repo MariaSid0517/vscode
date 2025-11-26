@@ -8,16 +8,16 @@
     "start": "node server.js"
   },
   "jest": {
-  "testEnvironment": "node",
-  "setupFiles": [
-    "<rootDir>/jest.setup.js"
-  ],
-  "coverageReporters": [
-    "text",
-    "lcov",
-    "cobertura"
-  ]
-},
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "cobertura"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -72,6 +72,7 @@
     "cors": "^2.8.5",
     "cross-spawn": "^7.0.6",
     "cssstyle": "^4.6.0",
+    "csv-writer": "^1.6.0",
     "data-urls": "^5.0.0",
     "debug": "^4.4.3",
     "decimal.js": "^10.6.0",
@@ -171,6 +172,7 @@
     "jest-worker": "^30.2.0",
     "jsdom": "^26.1.0",
     "mysql2": "^3.15.3",
+    "pdfkit": "^0.17.2",
     "superagent": "^10.2.3",
     "util": "^0.12.5",
     "zod": "^4.1.12"
