@@ -3,51 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href = "event.css">
+  <link rel="stylesheet" href="event.css">
   <title>Event Management Form</title>
+
+  <!-- Styling for the report toggle button + reports section -->
+  <style>
+    /* Bar directly under navbar that holds the button */
+    .top-action-bar {
+      width: 100%;
+      max-width: 1100px;
+      margin: 20px auto 0 auto;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 20px;
+    }
+
+    .report-toggle-btn {
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: none;
+      background-color: #1e88e5;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .report-toggle-btn:hover {
+      background-color: #1565c0;
+    }
+
+    .report-output {
+      max-height: 300px;
+      overflow: auto;
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 0.85rem;
+    }
+
+    .report-section {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+  </style>
 </head>
 <body>
   <div id="navbar-placeholder"></div>
-  <form id="eventForm" class = "container">
-    <h2>Event Management Form</h2>
 
-    <label for="name">Event Name</label>
-    <input type="text" id="name" name="name" required>
+  <!-- Button row BELOW the navbar, ABOVE the Event Form -->
+  <div class="top-action-bar">
+    <button id="toggleViewBtn" class="report-toggle-btn">View Reports</button>
+  </div>
 
-    <label for="description">Event Description</label>
-    <textarea id="description" name="description" required></textarea>
+  <!-- EVENT VIEW (default visible) -->
+  <div id="eventView">
+    <form id="eventForm" class="container">
+      <h2>Event Management Form</h2>
 
-    <label for="date">Event Date</label>
-    <input type="date" id="date" name="date" required>
+      <label for="name">Event Name</label>
+      <input type="text" id="name" name="name" required>
 
-    <label for="location">Location</label>
-    <input type="text" id="location" name="location" required>
+      <label for="description">Event Description</label>
+      <textarea id="description" name="description" required></textarea>
 
-    <label for="state">State</label>
-    <select id="state" name="state" required>
-      <option value="">Loading states...</option>
-    </select>
+      <label for="date">Event Date</label>
+      <input type="date" id="date" name="date" required>
 
-    <label for="max_volunteers">Max Volunteers</label>
-    <input type="number" id="max_volunteers" name="max_volunteers" placeholder="e.g. 30">
+      <label for="location">Location</label>
+      <input type="text" id="location" name="location" required>
 
-    <label for="required_skills">Required Skills</label>
-    <input type="text" id="required_skills" name="required_skills" placeholder="e.g. Teamwork, Leadership">
+      <label for="state">State</label>
+      <select id="state" name="state" required>
+        <option value="">Loading states...</option>
+      </select>
 
-    <label for="urgency">Urgency</label>
-    <select id="urgency" name="urgency">
-      <option value="">Select urgency</option>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-    </select>
+      <label for="max_volunteers">Max Volunteers</label>
+      <input type="number" id="max_volunteers" name="max_volunteers" placeholder="e.g. 30">
 
-    <button type="submit">Submit Event</button>
-  </form>
+      <label for="required_skills">Required Skills</label>
+      <input type="text" id="required_skills" name="required_skills" placeholder="e.g. Teamwork, Leadership">
 
-  <div id="eventsContainer" class="event-list">
-    <h2>Existing Events</h2>
-    <div id="eventsList" class = "eventList"></div>
+      <label for="urgency">Urgency</label>
+      <select id="urgency" name="urgency">
+        <option value="">Select urgency</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+
+      <button type="submit">Submit Event</button>
+    </form>
+
+    <div id="eventsContainer" class="event-list">
+      <h2>Existing Events</h2>
+      <div id="eventsList" class="eventList"></div>
+    </div>
+  </div>
+
+  <!-- REPORTS VIEW (hidden by default) -->
+  <div id="reportsView" style="display: none;">
+    <div id="reportsContainer" class="report-section">
+      <h2>Reports</h2>
+
+      <label for="reportType">Report Type</label>
+      <select id="reportType">
+        <option value="events">Event &amp; Volunteer Assignments</option>
+        <!-- Add more types later if needed -->
+      </select>
+
+      <label for="reportEvent">Event Filter</label>
+      <select id="reportEvent">
+        <option value="all">All events</option>
+        <!-- Options populated dynamically -->
+      </select>
+
+      <label for="reportFormat">Format</label>
+      <select id="reportFormat">
+        <option value="json">JSON (preview below)</option>
+        <option value="csv">CSV (download)</option>
+        <option value="pdf">PDF (download)</option>
+      </select>
+
+      <button type="button" id="generateReportBtn">Generate Report</button>
+
+      <!-- JSON preview -->
+      <pre id="reportOutput" class="report-output"></pre>
+    </div>
   </div>
 
   <script type="module">
@@ -58,6 +140,7 @@
   <script>
     const API_URL = 'http://localhost:3000/events';
     const STATES_URL = 'http://localhost:3000/states';
+    const REPORTS_URL = 'http://localhost:3000/reports';
 
     // Load states for dropdown
     async function loadStates() {
@@ -105,7 +188,7 @@
 
         if (response.ok) {
           alert(' Event added successfully!');
-          loadEvents();
+          loadEvents();                // refresh event list and report dropdown
           document.getElementById('eventForm').reset();
         } else {
           alert(' Error: ' + JSON.stringify(data.errors || data.error));
@@ -116,7 +199,7 @@
       }
     });
 
-    //  Load events
+    //  Load events (used for event cards and report event dropdown)
     async function loadEvents() {
       try {
         const response = await fetch(API_URL);
@@ -125,12 +208,18 @@
         const eventsList = document.getElementById('eventsList');
         eventsList.innerHTML = '';
 
-        if (events.length === 0) {
+        const reportEventSelect = document.getElementById('reportEvent');
+        if (reportEventSelect) {
+          reportEventSelect.innerHTML = '<option value="all">All events</option>';
+        }
+
+        if (!Array.isArray(events) || events.length === 0) {
           eventsList.innerHTML = '<p>No events found.</p>';
           return;
         }
 
         events.forEach(event => {
+          // Event cards
           const div = document.createElement('div');
           div.classList.add('event-card');
           div.innerHTML = `
@@ -144,12 +233,81 @@
             <p><strong>Urgency:</strong> ${event.urgency || 'N/A'}</p>
           `;
           eventsList.appendChild(div);
+
+          // Populate event filter dropdown for reports
+          if (reportEventSelect) {
+            const opt = document.createElement('option');
+            opt.value = event.event_id;
+            opt.textContent = event.event_name;
+            reportEventSelect.appendChild(opt);
+          }
         });
       } catch (err) {
         console.error(' Error fetching events:', err);
         document.getElementById('eventsList').innerHTML = '<p>Error loading events.</p>';
       }
     }
+
+    // Generate report based on dropdowns
+    const generateReportBtn = document.getElementById('generateReportBtn');
+    const reportOutput = document.getElementById('reportOutput');
+
+    if (generateReportBtn) {
+      generateReportBtn.addEventListener('click', async () => {
+        const reportType = document.getElementById('reportType').value;
+        const reportFormat = document.getElementById('reportFormat').value;
+        const reportEvent = document.getElementById('reportEvent').value;
+
+        // Currently only "events" is supported
+        if (reportType !== 'events') return;
+
+        const params = new URLSearchParams();
+        params.set('format', reportFormat);
+        if (reportEvent !== 'all') {
+          params.set('event_id', reportEvent);
+        }
+
+        const url = `${REPORTS_URL}/events?${params.toString()}`;
+
+        if (reportFormat === 'json') {
+          reportOutput.textContent = 'Loading report...';
+          try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Failed to fetch report');
+            const data = await res.json();
+            reportOutput.textContent = JSON.stringify(data, null, 2);
+          } catch (err) {
+            console.error('Error generating report:', err);
+            reportOutput.textContent = 'Error loading report.';
+          }
+        } else {
+          // CSV or PDF: open download in new tab
+          window.open(url, '_blank');
+          reportOutput.textContent = '';
+        }
+      });
+    }
+
+    // Toggle between event view and report view
+    const toggleViewBtn = document.getElementById('toggleViewBtn');
+    const eventView = document.getElementById('eventView');
+    const reportsView = document.getElementById('reportsView');
+
+    toggleViewBtn.addEventListener('click', () => {
+      const showingReports = reportsView.style.display !== 'none';
+
+      if (showingReports) {
+        // Switch back to event creation view
+        reportsView.style.display = 'none';
+        eventView.style.display = 'block';
+        toggleViewBtn.textContent = 'View Reports';
+      } else {
+        // Switch to reports view
+        reportsView.style.display = 'block';
+        eventView.style.display = 'none';
+        toggleViewBtn.textContent = 'Create Event';
+      }
+    });
 
     //  Initialize page
     loadStates();

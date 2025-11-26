@@ -11,7 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const matchRoutes = require('./routes/matchformroutes'); // volunteer matching routes
 const notificationRoutes = require('./routes/notificationRoutes');
-
+const reportRoutes = require('./routes/reportRoutes');
 
 // Initialize app
 const app = express();
@@ -60,7 +60,7 @@ app.use('/', authRoutes);        // /register, /login
 app.use('/', profileRoutes);     // /profiles/:user_id
 app.use('/match', matchRoutes);  // volunteer matching
 app.use('/notifications', notificationRoutes);
-
+app.use('/reports', reportRoutes);
 
 // 404 fallback
 app.use((_req, res) => {
